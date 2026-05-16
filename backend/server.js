@@ -2,9 +2,12 @@ import mongoose from 'mongoose'
 import express from 'express'
 import storeRoutes from './routes/storeRoutes.js' 
 import dotenv from 'dotenv'
+import cors from 'cors'
+
 
 dotenv.config();
 const app = express();
+app.use(cors());
 app.use(express.json()); // converts json to jso for req.body
 app.use('/api/store', storeRoutes);
 
