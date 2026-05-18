@@ -1,6 +1,9 @@
 import {useState} from "react";
+import { useContext } from "react";
+import { ProductContext } from "../context/productContext.jsx";
 
 const ProductForm = () => {
+    const { dispatch } = useContext(ProductContext);
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
@@ -32,6 +35,7 @@ const ProductForm = () => {
                 setTitle('');
                 setPrice('');
                 setQuantity('');
+                dispatch({type: "UPDATE_PRODUCT", payload: productItem});
             }
         
 

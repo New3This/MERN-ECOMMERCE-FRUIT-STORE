@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import ProductGroup from "../components/ProductGroup.jsx";
 import ProductForm from "../components/ProductForm.jsx"
+import { ProductContext } from "../context/productContext.jsx";
 
 const Admin = () => {
-    const [products, setProducts] = useState(null);
+    const { state: {products}, dispatch } = useContext(ProductContext);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -16,7 +17,7 @@ const Admin = () => {
 
                 else {
                     const product = await response.json();
-                    setProducts(product);
+                    dispatch({type: "SET_PRODUCTS", payload: product});
                 }
             }
             catch (err) {
