@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import ProductGroup from "./ProductGroup.jsx";
+import ProductGroup from "../components/ProductGroup.jsx";
+import ProductForm from "../components/ProductForm.jsx"
+
 const Admin = () => {
     const [products, setProducts] = useState(null);
 
@@ -29,12 +31,22 @@ const Admin = () => {
     
 
     return (
-        <div className="Home">
-            <h2>Admin Page</h2>
-            {products && products.map((product) => (
-                <ProductGroup key={product._id} product={product} />
-            ))}
+        <div className="admin-page">
+
+            <div className="product-group-container">
+
+                {products && products.map((product) => (
+                    <ProductGroup key={product._id} product={product} />
+                ))}
+
+            </div>
+
+            <div className="product-form-container">
+                <ProductForm/>
+            </div>
+
         </div>
+
     )
 }
 
