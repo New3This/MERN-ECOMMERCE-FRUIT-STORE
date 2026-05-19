@@ -34,8 +34,6 @@ const ProductGroup = ({product}) => {
                 <p className="product-price"><strong>Price:</strong> {product.price}</p>
                 <p className="product-quantity"><strong>Quantity:</strong> {product.quantity}</p>
                 <p className="product-creation">Creation Date:{product.createdAt}</p>
-                <p className="product-creation">Product ID:{product._id}</p>
-
             </div>
             <div className="delete-product">
                 <img src={trash} alt="Trash" onClick={handleDelete} />
