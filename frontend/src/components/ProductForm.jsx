@@ -7,7 +7,7 @@ const ProductForm = () => {
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
-
+    const [errorFields, setErrorFields] = useState([]);
 
     const submitProduct = async (e) => {
 
@@ -28,9 +28,11 @@ const ProductForm = () => {
         })
 
         if (!response.ok) {
-            throw new Error("Couldn't POST");
+            const json = await response.json();
+            setErrorFields(json.errorFields);
         }
         else {
+            setErrorFields([]);
             setTitle('');
             setPrice('');
             setQuantity('');
@@ -43,12 +45,13 @@ const ProductForm = () => {
     return (
         <form className="admin-form">
             <label>Title:</label>
-            <input type="text" onChange={(e) => {setTitle(e.target.value)}} value={title}/>
+            <input type="text" onChange={(e) => {setTitle(e.target.value)}} value={title} className={errorFields.includes("title") ? "error" : ""}/>
             <label>Price:</label>
-            <input type="text" onChange={(e) => {setPrice(e.target.value)}} value={price}/>
+            <input type="text" onChange={(e) => {setPrice(e.target.value)}} value={price} className={errorFields.includes("price") ? "error" : ""}/>
             <label>Quantity:</label>
-            <input type="text" onChange={(e) => {setQuantity(e.target.value)}} value={quantity}/>
-            <button className="admin-button" onClick={submitProduct} disabled={!title || !price || !quantity}>Add</button>
+            <input type="text" onChange={(e) => {setQuantity(e.target.value)}} value={quantity} className={errorFields.includes("quantity") ? "error" : ""}/>
+            <button className="admin-button" onClick={submitProduct}>Add</button>
+            {errorFields.length > 0 && <div className="form-error-msg">Fill in the following: {errorFields.join(", ")}</div>}
         </form>
     )
 

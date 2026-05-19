@@ -120,3 +120,17 @@ body {
 .admin-form > button:hover {
     background-color: rgb(200, 195, 195);
 }
+
+input.error {
+    border: 2px solid red;
+}
+
+.form-error-msg {
+    color: rgb(236, 18, 18);
+    margin-top: 10px;
+    font-size: 0.6em;
+    background-color: rgba(177, 14, 14, 0.1);
+    padding:5px;
+    border: 1px solid rgb(236, 18, 18);
+    text-align: center;
+}

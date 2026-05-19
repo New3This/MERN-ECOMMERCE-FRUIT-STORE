@@ -23,7 +23,24 @@ export const getOneProduct = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
+    
     const {title, price, quantity} = req.body;
+
+    let errorFields = [];
+
+    if (!title) {
+        errorFields.push("title");
+    }
+    if (!price) {
+        errorFields.push("price");
+    }
+    if (!quantity) {
+        errorFields.push("quantity");
+    }
+    if (errorFields.length >=1) {
+        return res.status(400).json({error: "Please fill the following fields:", errorFields});
+    }
+
     try {
         const product = await Product.create({title, price, quantity});
         res.status(200).json(product);
@@ -67,7 +84,7 @@ export const updateExistingProduct = async (req, res) => {
         });
 
         if (!product) {
-            res.status(404).json({msg: "Workout does not exist"});
+            res.status(404).json({msg: "Product does not exist"});
         }
         else {
             res.status(200).json(product);
