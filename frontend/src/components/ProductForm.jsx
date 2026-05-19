@@ -19,27 +19,25 @@ const ProductForm = () => {
             quantity: quantity
         }
 
-        
-            const response = await fetch("http://localhost:4000/api/store/", {
-                method:"POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(productItem)
-            })
-
-            if (!response.ok) {
-                throw new Error("Couldn't POST");
+        const response = await fetch("http://localhost:4000/api/store/", {
+            method:"POST",
+            body: JSON.stringify(productItem),
+            headers: {
+                'Content-Type': 'application/json'
             }
-            else {
-                setTitle('');
-                setPrice('');
-                setQuantity('');
-                dispatch({type: "UPDATE_PRODUCT", payload: productItem});
-            }
+        })
+
+        if (!response.ok) {
+            throw new Error("Couldn't POST");
+        }
+        else {
+            setTitle('');
+            setPrice('');
+            setQuantity('');
+            const product = await response.json();
+            dispatch({type: "ADD_PRODUCT", payload: product});
+        }
         
-
-
     }
     
     return (

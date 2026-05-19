@@ -4,6 +4,9 @@
     margin: 0px;
 }
 
+*:hover {
+
+}
 
 .admin-page {
     display: flex;
@@ -18,7 +21,7 @@
 
 .ProductGroup {
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
     border:1px solid rgb(221, 218, 218);
     padding:15px;
     margin: 30px 30px 30px 100px;
@@ -27,6 +30,7 @@
     box-shadow: 0 0 10px 2px rgb(221, 218, 218);
     border-radius: 5px;
     font-size:1.1em;
+    justify-content: space-between;
 }
 
 .ProductGroup > p {
@@ -72,6 +76,16 @@ body {
 .product-price, .product-quantity {
     color: rgb(80, 76, 76);
     font-size:1.2em;
+}
+
+.delete-product {
+    display:flex;
+}
+
+.delete-product > img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
 }
 
 .admin-form {

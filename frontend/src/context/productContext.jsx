@@ -10,9 +10,15 @@ const reducer = (state, action) => {
         };
     }
 
-    else if (action.type === "UPDATE_PRODUCT") {
+    else if (action.type === "ADD_PRODUCT") {
         return {
             products: [action.payload, ...state.products]
+        }
+    }
+
+    else if (action.type === "DELETE_PRODUCT") {
+        return {
+            products: state.products.filter((product) => product._id !== action.payload._id)
         }
     }
 
@@ -23,7 +29,7 @@ const reducer = (state, action) => {
 
 export const ProductsContextProvider = ({ children }) => {
 
-    const [state, dispatch] = useReducer(reducer, {products: null});
+    const [state, dispatch] = useReducer(reducer, {products: []});
 
     return (
         <ProductContext.Provider value={{ state, dispatch }}>

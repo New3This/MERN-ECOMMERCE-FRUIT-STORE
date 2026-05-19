@@ -43,7 +43,7 @@ export const deleteProduct = async (req, res) => {
 
         const product = await Product.findByIdAndDelete(id);
         if (!product) {
-            res.status(404).json({msg: "Workout does not exist"});
+            res.status(404).json({msg: "Product does not exist"});
         }
         else {
             res.status(200).json(product);
