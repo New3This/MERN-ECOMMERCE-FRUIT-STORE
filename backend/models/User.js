@@ -42,7 +42,6 @@ userSchema.statics.signUp = async function(username, email, password) {
         throw Error('Password is not strong enough');
     }
 
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -50,4 +49,25 @@ userSchema.statics.signUp = async function(username, email, password) {
     
     return user;
 }
+
+userSchema.statics.login = async function (username, email, password) {
+
+    if (!username && !email || !password) {
+        throw Error('All fields must be filled');
+    }
+    const user = await this.findOne({username}) || await this.findOne({email});
+
+    if (!user) {
+        throw Error('Incorrect username or email');
+    }
+    
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+        throw Error('Incorrect password');
+    }
+
+    return user;
+}
+
 export default mongoose.model('User', userSchema);
