@@ -1,6 +1,7 @@
 import trash from "../assets/trash.svg";
-import {useContext} from "react";
+import { useContext } from "react";
 import { ProductContext } from "../context/productContext.jsx";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
 const ProductGroup = ({product}) => {
 
@@ -33,7 +34,7 @@ const ProductGroup = ({product}) => {
                 <p className="product-title">{product.title}</p>
                 <p className="product-price"><strong>Price:</strong> {product.price}</p>
                 <p className="product-quantity"><strong>Quantity:</strong> {product.quantity}</p>
-                <p className="product-creation">Creation Date:{product.createdAt}</p>
+                <p className="product-creation">Created {formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })}</p>
             </div>
             <div className="delete-product">
                 <img src={trash} alt="Trash" onClick={handleDelete} />
