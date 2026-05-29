@@ -1,13 +1,14 @@
 import { useState } from "react";
+import useLogin from "../hooks/useLogin";
 
 const Login = () => {
     const [EmailUser, setEmailUser] = useState('');
     const [password, setPassword] = useState('');
-
+    const { login } = useLogin();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(EmailUser, password);
+        login(EmailUser, EmailUser, password);
     }
 
     return (
