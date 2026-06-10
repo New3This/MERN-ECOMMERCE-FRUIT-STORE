@@ -14,17 +14,11 @@ const Navbar = () => {
     return (
         <header>
             <div className="navbar">
-                <Link to="/" className="navbar-link">
-                    Admin
-                </Link>
                 <nav>
                     {!user && (
                         <>
-                            <Link to="/login" className="navbar-link">
-                                Login
-                            </Link>    
-                            <Link to="/signup" className="navbar-link">
-                                Sign Up
+                            <Link to="/" className="navbar-link">
+                                Join Us
                             </Link>   
                         </>
                     )}

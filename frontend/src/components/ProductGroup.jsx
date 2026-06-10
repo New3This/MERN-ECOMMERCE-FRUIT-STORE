@@ -2,16 +2,24 @@ import trash from "../assets/trash.svg";
 import { useContext } from "react";
 import { ProductContext } from "../context/productContext.jsx";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { authenticateContext } from "../context/authenticateContext.jsx";
 
 const ProductGroup = ({product}) => {
 
     const { dispatch } = useContext(ProductContext);
-
+    const { user } = useContext(authenticateContext);
 
     const handleDelete = async () => {
+
+        if (!user) {
+            return
+        }
         try {
             const response = await fetch(`http://localhost:4000/api/store/${product._id}`, {
-                method:"DELETE"
+                method:"DELETE",
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
             });
 
             if (!response.ok) {

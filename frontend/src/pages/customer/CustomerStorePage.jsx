@@ -1,15 +1,21 @@
 import { useEffect, useState, useContext } from "react";
-import ProductGroup from "../components/ProductGroup.jsx";
-import ProductForm from "../components/ProductForm.jsx"
-import { ProductContext } from "../context/productContext.jsx";
+import ProductGroup from "../../components/ProductGroup.jsx";
+import ProductForm from "../../components/ProductForm.jsx"
+import { ProductContext } from "../../context/productContext.jsx";
+import { authenticateContext } from "../../context/authenticateContext.jsx";
 
-const Admin = () => {
+const CustomerStorePage = () => {
     const { state: {products}, dispatch } = useContext(ProductContext);
+    const { user } = useContext(authenticateContext);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:4000/api/store/');
+                const response = await fetch('http://localhost:4000/api/store/', {
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
 
                 if (!response.ok) {
                     throw new Error("Fetch failed!");
@@ -25,9 +31,10 @@ const Admin = () => {
             }
         }
 
-        fetchProducts();
-
-    }, [])
+        if (user) {
+            fetchProducts();
+        }
+    }, [user])
 
     
 
@@ -51,4 +58,4 @@ const Admin = () => {
     )
 }
 
-export default Admin;
+export default CustomerStorePage;

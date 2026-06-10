@@ -7,9 +7,13 @@ const createToken = (id) => {
 
 export const signupUser = async (req, res) => {
     try {
-        const user = await userModel.signUp(req.body.username, req.body.email, req.body.password);
+        const user = await userModel.signUp(req.body.username, req.body.email, req.body.password, req.body.role);
         const token = createToken(user._id);
-        res.status(201).json({user, token});
+        const data = {
+            ...user.toObject(), // convert Mongoose document to plain JavaScript object
+            token: token
+        }
+        res.status(201).json(data);
     }
     catch (err) {
         res.status(400).json({error: err.message});
@@ -18,13 +22,17 @@ export const signupUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     try {
-        const {username, email, password} = req.body;
-        const user = await userModel.login(username, email, password);
+        const {username, email, password, role} = req.body;
+        const user = await userModel.login(username, email, password, role);
         // alternate way of writing the above line:
-        // const user = await userModel.login(req.body.username, req.body.email, req.body.password);
-        
+        // const user = await userModel.login(req.body.username, req.body.email, req.body.password, req.body.role);
+
         const token = createToken(user._id);
-        res.status(201).json({user, token});
+        const data = {
+            ...user.toObject(),
+            token: token
+        }
+        res.status(201).json(data);
     }
     catch (err) {
         res.status(400).json({error: err.message});

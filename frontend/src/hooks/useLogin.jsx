@@ -6,27 +6,28 @@ import { useContext } from "react";
         
         const { dispatch } = useContext(authenticateContext);
 
-        const login = async (email, username, password) => {
+        const login = async (email, username, password, role) => {
             try {
                 const response = await fetch('http://localhost:4000/api/user/login', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({email, username, password})
+                    body: JSON.stringify({email, username, password, role})
                 })  
                     
-                const user = await response.json();
+                const userPlusToken = await response.json();
 
                 if (response.ok) {
                     // save the user to local storage
-                    localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('user', JSON.stringify(userPlusToken));
                     // update the auth context
-                    dispatch({type: "LOGIN", payload: user});
-                } else {
-                    throw new Error(user.error || 'Login failed');
+                    dispatch({type: "LOGIN", payload: userPlusToken});
+                } 
+                else {
+                    throw new Error(userPlusToken.error);
                 }
-            } catch (error) {
-                console.error('Login error:', error);
-                throw error;
+            } 
+            catch (error) {
+                throw new Error(error);
             }
         }
 

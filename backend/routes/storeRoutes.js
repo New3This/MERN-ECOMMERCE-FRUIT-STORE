@@ -1,9 +1,13 @@
 import express from 'express'
-import {createProduct, getAllProducts, getOneProduct, deleteProduct, updateExistingProduct} from '../controller/storeController.js'
+import {createProduct, getAllProducts, getOneProduct, deleteProduct, updateExistingProduct, getAllUsers} from '../controller/storeController.js'
+import authorise from '../middleware/authorise.js';
+
 const router = express.Router();
 
+router.use(authorise);
 
 router.get('/', getAllProducts);
+router.get('/users', getAllUsers);
 
 router.get('/:id', getOneProduct);
 
@@ -17,5 +21,6 @@ router.delete('/:id', deleteProduct);
 router.patch('/:id', updateExistingProduct)
 
 router.post('/', createProduct);
+
 
 export default router;

@@ -16,10 +16,15 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    role: {
+        type: String,
+        enum: ["customer", "admin"],
+        default: "customer"
     }
 });
 
-userSchema.statics.signUp = async function(username, email, password) {
+userSchema.statics.signUp = async function(username, email, password, role="customer") { // defaults to customer
     const userExists = await this.findOne({username});
     const emailExists = await this.findOne({email});
 
@@ -45,12 +50,12 @@ userSchema.statics.signUp = async function(username, email, password) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await this.create({username, email, password: hashedPassword});
+    const user = await this.create({username, email, password: hashedPassword, role});
     
     return user;
 }
 
-userSchema.statics.login = async function (username, email, password) {
+userSchema.statics.login = async function (username, email, password, role) {
 
     if (!username && !email || !password) {
         throw Error('All fields must be filled');
@@ -60,7 +65,11 @@ userSchema.statics.login = async function (username, email, password) {
     if (!user) {
         throw Error('Incorrect username or email');
     }
-    
+
+    if (role && user.role !== role) {
+        throw Error('Incorrect Login Portal');
+    }
+
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {

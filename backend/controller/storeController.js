@@ -1,9 +1,17 @@
 import Product from '../models/Product.js'
+import User from '../models/User.js'
 import mongoose from 'mongoose'
 
 export const getAllProducts = async (req, res) => {
-    const products = await Product.find({}).sort({createdAt:-1})
+    const user_id = req.user._id;
+
+    const products = await Product.find({user_id}).sort({createdAt:-1})
     res.status(200).json(products);
+}
+
+export const getAllUsers = async (req, res) => {
+    const users = await User.find().select('-password');
+    res.status(200).json(users);
 }
 
 export const getOneProduct = async (req, res) => {
@@ -42,7 +50,8 @@ export const createProduct = async (req, res) => {
     }
 
     try {
-        const product = await Product.create({title, price, quantity});
+        const user_id = req.user._id;
+        const product = await Product.create({title, price, quantity, user_id});
         res.status(200).json(product);
     }
     catch (err) {
