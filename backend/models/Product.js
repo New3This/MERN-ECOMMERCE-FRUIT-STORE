@@ -18,6 +18,11 @@ const productSchema = new Schema ({
     user_id: {
         type: String,
         required: true
+    },
+    image: {
+        type: String,
+        default: '',
+        required: false
     }
 }, { timestamps: true})
 

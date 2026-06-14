@@ -39,7 +39,7 @@ export const createProduct = async (req, res) => {
     
     const {title, price, quantity} = req.body;
 
-    let errorFields = [];
+    const errorFields = [];
 
     if (!title) {
         errorFields.push("title");
@@ -50,17 +50,23 @@ export const createProduct = async (req, res) => {
     if (!quantity) {
         errorFields.push("quantity");
     }
-    if (errorFields.length >=1) {
+    if (errorFields.length > 0) {
         return res.status(400).json({error: "Please fill the following fields:", errorFields});
     }
 
     try {
         const user_id = req.user._id;
-        const product = await Product.create({title, price, quantity, user_id});
+        let image = '';
+
+        if (req.file) {
+            image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+                    // http         :// localhost:4000  /uploads/ filename.png
+        }
+        const product = await Product.create({title, price, quantity, user_id, image});
         res.status(200).json(product);
     }
     catch (err) {
-        res.status(400).json({error: err.message});
+        res.status(400).json({error: err.message, errorFields: []});
     }
     // res.send({msg:"Admin function to add store items"});
 }
