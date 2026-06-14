@@ -22,8 +22,7 @@ const ProductForm = () => {
         const productItem = {
             title: title,
             price: price,
-            quantity: quantity
-        }
+            quantity: quantity        }
 
         const response = await fetch("http://localhost:4000/api/store/", {
             method:"POST",
@@ -43,7 +42,7 @@ const ProductForm = () => {
             setTitle('');
             setPrice('');
             setQuantity('');
-            const product = await response.json();
+                const product = await response.json();
             dispatch({type: "ADD_PRODUCT", payload: product});
         }
         
@@ -57,6 +56,8 @@ const ProductForm = () => {
             <input type="text" onChange={(e) => {setPrice(e.target.value)}} value={price} className={errorFields.includes("price") ? "error" : ""}/>
             <label>Quantity:</label>
             <input type="text" onChange={(e) => {setQuantity(e.target.value)}} value={quantity} className={errorFields.includes("quantity") ? "error" : ""}/>
+            <label>Image URL:</label>
+            <input type="text" onChange={(e) => {setImage(e.target.value)}} value={image} className={errorFields.includes("image") ? "error" : ""}/>
             <button className="admin-button" onClick={submitProduct}>Add</button>
             {errorFields.length > 0 && 
                 (

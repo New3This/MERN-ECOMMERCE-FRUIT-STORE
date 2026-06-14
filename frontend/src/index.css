@@ -134,3 +134,11 @@ input.error {
     border: 1px solid rgb(236, 18, 18);
     text-align: center;
 }
+
+.catalogue-card { 
+    border:1px solid rgb(221, 218, 218);
+    width: fit-content;
+    padding:15px;
+    margin: 30px 30px 30px 100px;
+    text-align: center;
+}

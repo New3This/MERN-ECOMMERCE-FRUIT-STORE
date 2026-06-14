@@ -29,7 +29,9 @@ const reducer = (state, action) => {
 
 export const ProductsContextProvider = ({ children }) => {
 
-    const [state, dispatch] = useReducer(reducer, {products: []});
+    const [state, dispatch] = useReducer(reducer, {
+        products: []
+    });
 
     return (
         <ProductContext.Provider value={{ state, dispatch }}>
