@@ -43,7 +43,7 @@ const ProductGroup = ({product}) => {
                 <p className="product-price"><strong>Price:</strong> {product.price}</p>
                 <p className="product-quantity"><strong>Quantity:</strong> {product.quantity}</p>
                 <p className="product-creation">Created {formatDistanceToNow(new Date(product.createdAt), { addSuffix: true })}</p>
-                <img src={product.image} alt={product.title} className="product-image" />
+                <img src={product.image} alt={product.title} className="product-image" style={{ maxWidth: '100%', height: 'auto' }} />
             </div>
             <div className="delete-product">
                 <img src={trash} alt="Trash" onClick={handleDelete} />

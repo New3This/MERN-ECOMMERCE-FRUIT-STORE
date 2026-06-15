@@ -1,6 +1,7 @@
 import Product from '../models/Product.js'
 import User from '../models/User.js'
 import mongoose from 'mongoose'
+import fs from 'fs'
 
 export const getAllProducts = async (req, res) => {
     const products = await Product.find().sort({createdAt:-1})
@@ -38,7 +39,6 @@ export const getOneProduct = async (req, res) => {
 export const createProduct = async (req, res) => {
     
     const {title, price, quantity} = req.body;
-
     const errorFields = [];
 
     if (!title) {
@@ -54,20 +54,16 @@ export const createProduct = async (req, res) => {
         return res.status(400).json({error: "Please fill the following fields:", errorFields});
     }
 
-    try {
-        const user_id = req.user._id;
-        let image = '';
+    const user_id = req.user._id;
+    let image = '';
 
-        if (req.file) {
-            image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-                    // http         :// localhost:4000  /uploads/ filename.png
-        }
-        const product = await Product.create({title, price, quantity, user_id, image});
-        res.status(200).json(product);
+    if (req.file) {
+        image = `${req.protocol}://${req.get('host')}/imageFolder/${req.file.filename}`;
+                // http         :// localhost:4000  /imageFolder/ filename.png
     }
-    catch (err) {
-        res.status(400).json({error: err.message, errorFields: []});
-    }
+    const product = await Product.create({title, price, quantity, user_id, image});
+    res.status(200).json(product);
+  
     // res.send({msg:"Admin function to add store items"});
 }
 
@@ -78,19 +74,30 @@ export const deleteProduct = async (req, res) => {
             return res.status(404).json({msg: "ID is not valid"})
         }
 
-        const product = await Product.findByIdAndDelete(id);
+        const product = await Product.findById(id);
+
         if (!product) {
-            res.status(404).json({msg: "Product does not exist"});
+            return res.status(404).json({msg: "Product does not exist"});
         }
-        else {
-            res.status(200).json(product);
+
+        if (product.image) { // if has image, delete img
+            //  http://localhost:4000/imageFolder/empty.png
+            const filename = product.image.split('/').pop(); // empty.png
+            const filePath = `./imageFolder/${filename}`; // /imageFolder/empty.png
+
+            await fs.promises.unlink(filePath);
         }
+
+        await Product.findByIdAndDelete(id); // delete product from db
+
+        return res.status(200).json(product);
     }
     catch (err) {
-        res.status(400).json({error: err.message});
+        return res.status(400).json({error: err.message});
     }
     
 }
+
 export const updateExistingProduct = async (req, res) => {
 
     const {id} = req.params;
