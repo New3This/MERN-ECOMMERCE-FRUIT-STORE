@@ -50,7 +50,7 @@ const ProductForm = () => {
             setPrice('');
             setQuantity('');
             if (fileInputRef.current) {
-                fileInputRef.current.value = '';
+                fileInputRef.current.value = ''; // resets to "No File Chosen" instead of the file recently selected
             }
             const product = await response.json();
             dispatch({type: "ADD_PRODUCT", payload: product});
@@ -67,11 +67,14 @@ const ProductForm = () => {
             <label>Quantity:</label>
             <input type="number" onChange={(e) => {setQuantity(e.target.value)}} value={quantity} className={errorFields.includes("quantity") ? "error" : ""}/>
             <label>Product Image:</label>
-            <input type="file" onChange={(e) => {setImage(e.target.files[0])}} ref={fileInputRef}/>
+            <input type="file" onChange={(e) => {setImage(e.target.files[0])}} ref={fileInputRef} className={errorFields.includes("image") ? "error" : ""}/>
             <button className="admin-button" onClick={submitProduct}>Add</button>
             {errorFields.length > 0 && 
                 (
-                    errorFields[0] === "Must be logged in" ? "Must be logged in" : <div className="form-error-msg">Fill in the following: {errorFields.join(", ")}</div>
+                    errorFields[0] === "Must be logged in" ? "Must be logged in" : 
+                    (
+                        errorFields[0] === "image" ? <div className="form-error-msg">Image Already Exists</div> : <div className="form-error-msg">Fill in the following: {errorFields.join(", ")}</div>
+                    )
                 )
             }
         </form>
