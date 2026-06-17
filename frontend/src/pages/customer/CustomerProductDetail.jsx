@@ -4,8 +4,9 @@ import { authenticateContext } from "../../context/authenticateContext.jsx";
 import { ProductContext } from "../../context/productContext.jsx";
 
 const CustomerProductDetail = () => {
+    const { user } = useContext(authenticateContext);
     const {id} = useParams();
-    const {state: {products}, dispatch} = useContext(ProductContext);
+    const {state: {products}} = useContext(ProductContext);
     const [product, setProduct] = useState(null);
     useEffect(() => {
 
@@ -19,7 +20,11 @@ const CustomerProductDetail = () => {
         // if someone refreshes the page, can still access using params
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/api/store/${id}`);
+                const response = await fetch(`http://localhost:4000/api/store/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
 
                 if (!response.ok) {
                     throw new Error("Fetch failed!");
@@ -34,8 +39,10 @@ const CustomerProductDetail = () => {
             }
         };
 
-        fetchProduct();
-    }, [id, dispatch]);
+        if (user) {
+            fetchProduct();
+        };
+    }, [user]);
 
     if (!product) {
         return <div>Product not found</div>;
@@ -43,8 +50,9 @@ const CustomerProductDetail = () => {
     return (
         <div>
             <h1>{product.title}</h1>
+            <img src={product.image} alt={`image of ${product.title}`}/>
             <p>Price: {product.price}</p>
-            <p>Description: {product.description}</p>
+            <p>Description: Need to add description property to model</p>
             {product.quantity > 0 ? <p>Product Available</p> : <p>Product Unavailable</p>}
         </div>
     )

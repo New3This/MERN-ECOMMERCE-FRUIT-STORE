@@ -122,3 +122,28 @@ export const updateExistingProduct = async (req, res) => {
     }
 
 }
+
+export const addToCart = async (req, res) => {
+    const { productID } = req.body;
+    const user = await User.findById(req.user._id);
+    const result = user.cart.find(cartItem => cartItem.product.toString() === productID);
+    if (result) {
+        result.quantity += 1
+    }
+    else {
+        user.cart.push({product: productID, quantity: 1});
+    }
+
+    await user.save();
+
+    res.json(user.cart);
+}
+
+export const getCartProducts = async (req, res) => {
+    const user = await User.findById(req.user._id).select('cart').populate('cart.product');
+
+    if (!user) {
+        return res.status(404).json({msg: "No products added to cart "})
+    }
+    return res.status(200).json(user.cart);
+}

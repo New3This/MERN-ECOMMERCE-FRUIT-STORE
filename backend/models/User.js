@@ -21,7 +21,20 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ["customer", "admin"],
         default: "customer"
-    }
+    },
+    cart:[
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Product",
+                required: true
+            },
+            quantity: {
+                type: Number,
+                default: 1
+            }
+        }
+    ]
 });
 
 userSchema.statics.signUp = async function(username, email, password, role="customer") { // defaults to customer

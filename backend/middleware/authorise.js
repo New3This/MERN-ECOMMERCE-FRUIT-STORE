@@ -13,7 +13,7 @@ const authorise = async (req, res, next) => {
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = payload.id || payload._id;
+        const userId = payload.id;
 
         if (!userId) {
             return res.status(401).json({ error: 'Request is unauthorised' });

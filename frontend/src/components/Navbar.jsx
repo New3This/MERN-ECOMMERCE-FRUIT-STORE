@@ -3,7 +3,7 @@ import useLogout from "../hooks/useLogout.jsx";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { authenticateContext } from "../context/authenticateContext";
-
+import shoppingCart from "../assets/shopping-cart.png";
 const Navbar = () => {
     const { logout } = useLogout();
     const navigate = useNavigate();
@@ -27,12 +27,16 @@ const Navbar = () => {
                         </>
                     )}
                     {user && (
-                        <div>
-                            <span>{user.email}</span>
-                            <button onClick={logoutHandler} className="navbar-link">
-                                Logout
-                            </button>
-                        </div>
+                        <ul className="navbar-links">
+                            <li>Home</li>
+                            <li>Products</li>
+                            <li><a href="/cart">Cart</a></li>
+                            <li className="logout-button">    
+                                <button onClick={logoutHandler} className="navbar-link">
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
                     )}
                 </nav>
             </div>

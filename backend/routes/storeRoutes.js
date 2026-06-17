@@ -1,24 +1,24 @@
 import express from 'express'
-import {createProduct, getAllProducts, getOneProduct, deleteProduct, getAdminProducts, updateExistingProduct, getAllUsers} from '../controller/storeController.js'
+import {createProduct, getCartProducts, getAllProducts, getOneProduct, deleteProduct, getAdminProducts, updateExistingProduct, getAllUsers, addToCart} from '../controller/storeController.js'
 import authorise from '../middleware/authorise.js';
 import { upload } from '../middleware/upload.js'; // customised multer middleware for file upload
 
 const router = express.Router();
 
-router.get('/admin', authorise, getAdminProducts);
-router.get('/users', authorise, getAllUsers);
-router.get('/:id', getOneProduct);
-
 router.use(authorise);
 
+router.get('/admin', authorise, getAdminProducts);
+router.get('/users', authorise, getAllUsers);
+router.post('/addToCart', addToCart);
 router.get('/', getAllProducts);
-
+router.get('/addToCart', getCartProducts);
 // router.get('/savedItems', (req, res) => {
 //     res.send({msg:"Get all saved items"});
 // })
 
 
 router.delete('/:id', deleteProduct);
+router.get('/:id', getOneProduct);
 
 const handleUpload = (req, res, next) => {
     const errorFields = [];

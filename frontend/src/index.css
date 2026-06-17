@@ -8,6 +8,13 @@
 
 }
 
+.shopping-cart {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
 .admin-page {
     display: flex;
     flex-direction: row;
@@ -42,14 +49,39 @@
     color:rgb(16, 16, 17);
 }
 
-.navbar-link {
-    text-decoration: none;
-    margin-left: 100px;
-    font-size: 3em;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: rgb(27, 25, 25);
+.navbar {
+    width:100%;
 }
+
+.navbar-links {
+    list-style-type: none;
+    display: flex;
+    border:1px solid;
+    width:100%;
+    gap: 40px;
+    font-size: 2.2em;
+    align-items: center;
+}
+
+.navbar-links > li {
+    padding: 14px 20px;
+    cursor: pointer;
+}
+
+.logout-button {
+    margin-left: auto;
+    display:flex;    
+}
+
+.logout-button > button {
+    width:100%;
+    height:100%;
+    border-radius: 10px;
+    padding:20px;
+    font-size: 0.8em;
+    border: none;
+}
+
 
 header {
     background-color: rgb(218, 213, 213);

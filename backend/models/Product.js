@@ -16,14 +16,15 @@ const productSchema = new Schema ({
         required: true
     },
     user_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId, // instead of string - allows relationship between models = methods like populate work
+        ref: "User",
         required: true
     },
     image: {
         type: String,
         default: '',
         required: false
-    }
+    },
 }, { timestamps: true})
 
 export default mongoose.model('Product', productSchema);
