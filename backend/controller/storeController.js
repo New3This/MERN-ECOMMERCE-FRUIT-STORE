@@ -147,3 +147,28 @@ export const getCartProducts = async (req, res) => {
     }
     return res.status(200).json(user.cart);
 }
+
+export const removeFromCart = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({msg: "No user found"});
+        }
+        user.cart = user.cart.filter(cartItem => cartItem.product.toString() !== id);
+
+        await user.save();
+
+        await user.populate('cart.product');
+        
+        return res.status(200).json(user.cart);
+    }
+    
+    catch (err) {
+        return res.status(404).json({msg: err});
+    }
+
+
+}

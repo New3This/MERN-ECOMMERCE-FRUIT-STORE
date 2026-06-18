@@ -1,5 +1,5 @@
 import express from 'express'
-import {createProduct, getCartProducts, getAllProducts, getOneProduct, deleteProduct, getAdminProducts, updateExistingProduct, getAllUsers, addToCart} from '../controller/storeController.js'
+import {createProduct, removeFromCart, getCartProducts, getAllProducts, getOneProduct, deleteProduct, getAdminProducts, updateExistingProduct, getAllUsers, addToCart} from '../controller/storeController.js'
 import authorise from '../middleware/authorise.js';
 import { upload } from '../middleware/upload.js'; // customised multer middleware for file upload
 
@@ -16,6 +16,7 @@ router.get('/addToCart', getCartProducts);
 //     res.send({msg:"Get all saved items"});
 // })
 
+router.delete('/addToCart/:id', removeFromCart);
 
 router.delete('/:id', deleteProduct);
 router.get('/:id', getOneProduct);

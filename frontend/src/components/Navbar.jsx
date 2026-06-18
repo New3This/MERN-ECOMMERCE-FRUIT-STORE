@@ -28,7 +28,7 @@ const Navbar = () => {
                     )}
                     {user && (
                         <ul className="navbar-links">
-                            <li>Home</li>
+                            <li><a href="/">Home</a></li>
                             <li>Products</li>
                             <li><a href="/cart">Cart</a></li>
                             <li className="logout-button">    

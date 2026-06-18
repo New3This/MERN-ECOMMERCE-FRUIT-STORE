@@ -1,10 +1,34 @@
-import ProductGroup from "../../components/ProductGroup";
+import CartCard from "../../components/CartCard.jsx";
 import { useEffect, useState, useContext } from "react";
 import { authenticateContext } from "../../context/authenticateContext";
 
 const CustomerCart = () => {
     const [product, setProduct] = useState([]);
     const {user} = useContext(authenticateContext);
+
+    const handleDelete = async (productID) => {
+        try {
+            const response = await fetch(`http://localhost:4000/api/store/addToCart/${productID}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to remove cart item");
+            }
+            else {
+                const update = await response.json();
+                const updatedProducts = update.map((savedItem) => savedItem.product);
+                setProduct(updatedProducts);
+            }
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
 
     useEffect(() => {
 
@@ -22,7 +46,8 @@ const CustomerCart = () => {
                 }
 
                 const productData = await response.json();
-                const product = productData.map((savedItem) => savedItem.product)
+                const product = productData.map((savedItem) => savedItem.product);
+                console.log(product);
                 setProduct(product);
             } 
             catch (err) {
@@ -36,9 +61,8 @@ const CustomerCart = () => {
     }, [user]);
     return (
         <>
-        hi
             {product && product.map((product) => (
-                <ProductGroup key={product._id} product={product} />
+                <CartCard key={product._id} product={product} handleDelete={handleDelete} />
             ))}
         </>
     )
