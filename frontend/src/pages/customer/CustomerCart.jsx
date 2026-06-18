@@ -32,7 +32,6 @@ const CustomerCart = () => {
 
     useEffect(() => {
 
-        // if someone refreshes the page, can still access using params
         const fetchProduct = async () => {
             try {
                 const response = await fetch(`http://localhost:4000/api/store/addToCart`, {
@@ -46,8 +45,10 @@ const CustomerCart = () => {
                 }
 
                 const productData = await response.json();
-                const product = productData.map((savedItem) => savedItem.product);
-                console.log(product);
+                const product = productData.map((savedItem) => ({
+                    ...savedItem.product, cartQuantity: savedItem.quantity
+                    }));
+
                 setProduct(product);
             } 
             catch (err) {

@@ -136,7 +136,7 @@ export const addToCart = async (req, res) => {
 
     await user.save();
 
-    res.json(user.cart);
+    return res.json(user.cart);
 }
 
 export const getCartProducts = async (req, res) => {
