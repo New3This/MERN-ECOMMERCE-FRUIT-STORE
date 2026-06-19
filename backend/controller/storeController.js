@@ -20,6 +20,24 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(users);
 }
 
+export const getAllCustomers = async (req, res) => {
+    const customers = await User.find({role: "customer"});
+    return res.json(customers);
+}
+
+export const delSpecificUser = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const customers = await User.findByIdAndDelete(id);
+        return res.status(200).json(customers);
+    }
+
+    catch (err) {
+        return res.status(404).json(err);
+    }
+
+}
+
 export const getOneProduct = async (req, res) => {
     const {id} = req.params;
 
@@ -35,6 +53,8 @@ export const getOneProduct = async (req, res) => {
         res.status(200).json(product);
     }
 }
+
+
 
 export const createProduct = async (req, res) => {
     
@@ -136,6 +156,32 @@ export const addToCart = async (req, res) => {
 
     await user.save();
 
+    return res.json(user.cart);
+}
+
+export const decrementCart = async (req, res) => {
+    const { id } = req.params;
+    // const user = await User.findById(req.user._id).select('cart');
+    // const cartItem = await user.cart.find(item => item.product.toString() === id);
+    const user = await User.findById(req.user._id).select('cart');
+    const cartItem = user.cart.find(item => item.product._id.toString() === id);
+    cartItem.quantity -= 1;
+    await user.save();
+    await user.populate('cart.product');
+
+    return res.json(user.cart);
+}
+
+export const incrementCart = async (req, res) => {
+    const { id } = req.params;
+    // const user = await User.findById(req.user._id).select('cart');
+    // const cartItem = await user.cart.find(item => item.product.toString() === id);
+    const user = await User.findById(req.user._id).select('cart');
+    const cartItem = user.cart.find(item => item.product.toString() === id);
+    cartItem.quantity += 1;
+
+    await user.save();
+    await user.populate('cart.product');
     return res.json(user.cart);
 }
 

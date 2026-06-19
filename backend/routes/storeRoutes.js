@@ -1,5 +1,5 @@
 import express from 'express'
-import {createProduct, removeFromCart, getCartProducts, getAllProducts, getOneProduct, deleteProduct, getAdminProducts, updateExistingProduct, getAllUsers, addToCart} from '../controller/storeController.js'
+import {createProduct, incrementCart, decrementCart, getAllCustomers, delSpecificUser, removeFromCart, getCartProducts, getAllProducts, getOneProduct, deleteProduct, getAdminProducts, updateExistingProduct, getAllUsers, addToCart} from '../controller/storeController.js'
 import authorise from '../middleware/authorise.js';
 import { upload } from '../middleware/upload.js'; // customised multer middleware for file upload
 
@@ -7,15 +7,20 @@ const router = express.Router();
 
 router.use(authorise);
 
-router.get('/admin', authorise, getAdminProducts);
-router.get('/users', authorise, getAllUsers);
+router.get('/admin', getAdminProducts);
+router.get('/users', getAllUsers);
+router.get('/customers', getAllCustomers);
 router.post('/addToCart', addToCart);
-router.get('/', getAllProducts);
 router.get('/addToCart', getCartProducts);
+router.patch('/addToCart/decrement/:id', decrementCart);
+router.patch('/addToCart/increment/:id', incrementCart);
+router.get('/', getAllProducts);
+
 // router.get('/savedItems', (req, res) => {
 //     res.send({msg:"Get all saved items"});
 // })
 
+router.delete('/deleteUser/:id', delSpecificUser);
 router.delete('/addToCart/:id', removeFromCart);
 
 router.delete('/:id', deleteProduct);

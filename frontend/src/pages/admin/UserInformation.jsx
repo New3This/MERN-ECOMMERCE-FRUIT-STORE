@@ -4,16 +4,33 @@ import { authenticateContext } from "../../context/authenticateContext.jsx";
 
 const UserInformation = () => {
     const [userInfo, setUserInfo] = useState(null);
-    const { user } = useContext(authenticateContext);
-    
-    useEffect(() => {
-        if (!user) return;
+    const { user: adminUser } = useContext(authenticateContext);
 
+    const handleDelUser = async (userID) => {
+    const response = await fetch(`http://localhost:4000/api/store/deleteUser/${userID}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${adminUser.token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log("Failed to Delete");
+    }
+    else {
+        const msg = await response.json();
+        setUserInfo(prev => prev.filter((current) => current._id !== userID));
+        console.log(msg);
+    }
+    console.log("DELETE");
+}
+
+    useEffect(() => {
         const fetchUserInformation = async () => {
             try {
-                const response = await fetch('http://localhost:4000/api/store/users', {
+                const response = await fetch('http://localhost:4000/api/store/customers', {
                     headers: {
-                        'Authorization': `Bearer ${user.token}`
+                        'Authorization': `Bearer ${adminUser.token}`
                     }
                 });
 
@@ -28,15 +45,14 @@ const UserInformation = () => {
                 console.error(error);
             }
         };
-
         fetchUserInformation();
-    }, [user]);
+    }, [adminUser]);
 
     return (
         <div>
-
+            <h1>Customers:</h1>
             {userInfo && userInfo.map((user) => (
-                <UserGroup key={user._id} user={user} />
+                <UserGroup key={user._id} user={user} delUser={handleDelUser} />
             ))}
         </div>
     );

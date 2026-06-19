@@ -9,6 +9,7 @@ import CustomerHomePage from "./pages/customer/CustomerHomePage.jsx"
 import CustomerProductPage from "./pages/customer/CustomerProductPage.jsx"
 import CustomerProductDetail from "./pages/customer/CustomerProductDetail.jsx"
 import CustomerCart from "./pages/customer/CustomerCart.jsx"
+import CustomerAbout from './pages/customer/CustomerAbout.jsx';
 
 import AdminProductPage from "./pages/admin/AdminProductPage.jsx"
 import AdminHomePage from "./pages/admin/AdminHomePage.jsx"
@@ -21,9 +22,14 @@ import Login from "./pages/Login.jsx"
 
 function App() {
 
-    const { user } = useContext(authenticateContext);
+    const { user, authReady } = useContext(authenticateContext);
     const role = user?.role ?? null;
 
+
+    if (!authReady) {
+        return null;
+    }
+    
     return (
         <div className="App">
             <BrowserRouter>
@@ -32,8 +38,8 @@ function App() {
                     <Route path="/product/:id" element={<CustomerProductDetail/>} />
                     <Route path="/cart" element={<CustomerCart/>}/>
 
-                    <Route path="/" element={!user ? <HomePage/> : role === "customer" ? <CustomerProductPage/> : <AdminProductPage/>} />
-
+                    <Route path="/" element={!user ? <HomePage/> : role === "customer" ? <CustomerAbout/> : <AdminProductPage/>} />
+                    <Route path="/product" element={user ? <CustomerProductPage/> : <HomePage/>} />
                     <Route path="/CustomerHomePage" element={!user ? <CustomerHomePage/> : <Navigate to="/"/>} />
                     <Route path="/AdminHomePage" element={!user ? <AdminHomePage/> : <Navigate to="/" />} />
 
