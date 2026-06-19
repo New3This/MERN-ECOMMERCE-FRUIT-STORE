@@ -20,7 +20,7 @@ const CustomerCart = () => {
             }
             else {
                 const update = await response.json();
-                const updatedProducts = update.map((savedItem) => savedItem.product);
+                const updatedProducts = update.map((savedItem) => ({...savedItem.product, cartQuantity: savedItem.quantity}));
                 setProduct(updatedProducts);
             }
 
@@ -56,33 +56,37 @@ const CustomerCart = () => {
     }
 
 
-    const handleDecrement = async (productID) => {
-    try {
-        const response = await fetch(`http://localhost:4000/api/store/addToCart/decrement/${productID}`, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${user.token}`,
-            'Content-Type': 'application/json'
+    const handleDecrement = async (product) => {
+        
+        if (product.cartQuantity <= 1) {
+            await handleDelete(product._id);
+            return;
         }
-        })
+        try {
+            const response = await fetch(`http://localhost:4000/api/store/addToCart/decrement/${product._id}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${user.token}`,
+                'Content-Type': 'application/json'
+            }
+            })
 
-        if (!response.ok) {
-            throw new Error("Failed to increment cart item");
-        }
-        else {
-            const update = await response.json();            
-            const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-            setProduct(product);
-        }
+            if (!response.ok) {
+                throw new Error("Failed to increment cart item");
+            }
+            else {
+                const update = await response.json();            
+                const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
+                setProduct(product);
+            }
 
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
-    catch (err) {
-        console.log(err);
-    }
-}
 
     useEffect(() => {
-
         const fetchProduct = async () => {
             try {
                 const response = await fetch(`http://localhost:4000/api/store/addToCart`, {

@@ -12,7 +12,7 @@ const CartCard = ({product, handleDelete, handleIncrement, handleDecrement}) => 
                 <img src={product.image} alt={product.title} className="product-image" style={{ maxWidth: '100%', height: 'auto' }} />
                 <button onClick={() => handleIncrement(product._id)}>+</button>
                 <span className="product-quantity"><strong>Quantity:</strong> {product.cartQuantity}</span>
-                <button onClick={() => handleDecrement(product._id)}>-</button>
+                <button onClick={() => handleDecrement(product)}>-</button>
             </div>
             <div className="delete-product">
                 <img src={trash} alt="Trash" onClick={() => handleDelete(product._id)} />
