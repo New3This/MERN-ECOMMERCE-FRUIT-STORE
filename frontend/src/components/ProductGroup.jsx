@@ -63,7 +63,7 @@ const ProductGroup = ({product}) => {
         }
         try {
             const response = await fetch(`http://localhost:4000/api/store/${product._id}`, {
-                method:"DELETE",
+                method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${user.token}`
                 }

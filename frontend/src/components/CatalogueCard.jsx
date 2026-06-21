@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { authenticateContext } from "../context/authenticateContext.jsx";
 import { useContext } from "react";
+import bin from "../assets/trash.svg";
 
-const CatalogueCard = ({product}) => {
+const CatalogueCard = ({product, handleDelete}) => {
 
     const navigate = useNavigate();
     const { user } = useContext(authenticateContext);
@@ -42,6 +43,7 @@ const CatalogueCard = ({product}) => {
             <p>{product.price}</p>
             <button onClick={viewProductInstance}>More Details</button>
             <button onClick={addToCart}>Add to Cart</button>
+            {user.role !== "customer" && <img src={bin} alt="delete-icon" onClick={() => handleDelete(product)}/>}
         </div>
     )
 }   

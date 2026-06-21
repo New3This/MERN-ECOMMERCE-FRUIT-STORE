@@ -33,14 +33,40 @@ const CustomerProductPage = () => {
         if (user) {
             fetchProducts();
         }
-    }, [user])
+    }, [user]);
+
+   const handleDelete = async (product) => {
+        if (!user) {
+            return
+        }
+        try {
+            const response = await fetch(`http://localhost:4000/api/store/${product._id}`, {
+                method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Fetch failed!");
+            }
+
+            else {
+                const json = await response.json();
+                dispatch({type: "DELETE_PRODUCT", payload: json});
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <div>
             <h1>Customer Product Page</h1>
 
             {products && products.map((product) => (
-                <CatalogueCard key={product._id} product={product} />
+                <CatalogueCard key={product._id} product={product} handleDelete={handleDelete}/>
             ))}
 
         </div>
