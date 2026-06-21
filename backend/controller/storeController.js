@@ -164,6 +164,11 @@ export const deleteProduct = async (req, res) => {
 
             await fs.promises.unlink(filePath);
         }
+        
+        const cartUpdate = await User.updateMany(
+            { "cart.product": id },
+            { $pull: { cart: { product: id } } }
+        );
 
         await Product.findByIdAndDelete(id); // delete product from db
 
