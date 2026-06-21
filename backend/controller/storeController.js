@@ -2,6 +2,43 @@ import Product from '../models/Product.js'
 import User from '../models/User.js'
 import mongoose from 'mongoose'
 import fs from 'fs'
+import Stripe from 'stripe'
+import dotenv from 'dotenv'
+dotenv.config();
+import bcrypt from 'bcrypt'
+import validator from 'validator'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+export const checkoutSession = async (req, res) => {
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+                line_items: [
+                    {
+                        price_data: {
+                            currency: "AUD",
+                            product_data: {
+                                name: "DEMO",
+                                description: "Simple Demo",
+                            },
+                            unit_amount: 4999,
+                        },
+                        quantity: 1
+                    }
+                ],
+                mode: "payment",
+                success_url:"http://localhost:5173/",
+                cancel_url:"http://localhost:5173/product"
+        });
+
+        return res.json({ url: session.url });
+    } catch (error) {
+        console.error("Stripe Error Details:", error.message);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 
 export const getAllProducts = async (req, res) => {
     const products = await Product.find().sort({createdAt:-1})
@@ -54,7 +91,27 @@ export const getOneProduct = async (req, res) => {
     }
 }
 
+export const updateExistingProduct = async (req, res) => {
+    const {id} = req.params;
+    const updatedFields = req.body;
 
+    if (req.file) {
+        updatedFields.image = `${req.protocol}://${req.get('host')}/imageFolder/${req.file.filename}`;
+    }
+
+    const product = await Product.findByIdAndUpdate(id, updatedFields, {
+        returnDocument: 'after',
+        runValidators: true // validators prevent submitting empty field and letters (also input type does this)
+    });
+
+    if (!product) {
+        return res.status(404).json({msg: "No product found"});
+    }
+
+    const products = await Product.find().sort({createdAt:-1})
+    return res.status(200).json(products);
+
+}
 
 export const createProduct = async (req, res) => {
     
@@ -116,31 +173,6 @@ export const deleteProduct = async (req, res) => {
         return res.status(400).json({error: err.message});
     }
     
-}
-
-export const updateExistingProduct = async (req, res) => {
-
-    const {id} = req.params;
-    try {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({msg: "ID is not valid"})
-        }
-
-        const product = await Product.findOneAndUpdate({_id:id}, {
-            ...req.body
-        });
-
-        if (!product) {
-            res.status(404).json({msg: "Product does not exist"});
-        }
-        else {
-            res.status(200).json(product);
-        }
-    }
-    catch (err) {
-        res.status(400).json({error: err.message});
-    }
-
 }
 
 export const addToCart = async (req, res) => {
@@ -217,4 +249,39 @@ export const removeFromCart = async (req, res) => {
     }
 
 
+}
+
+export const updateProfile = async (req, res) => {
+    let {username, password} = req.body;
+    const errorField = [];
+    if (!validator.isStrongPassword(password)) {
+        errorField.push('Password is not strong enough');
+    }
+    
+    const userExists = await User.findOne({username, _id : {$ne: req.user._id}}); // $ne -> not equal
+
+    if (userExists) {
+        errorField.push('Username is taken');
+    }
+
+    if (errorField.length > 0) {
+        return res.status(400).json({errorField});
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+
+    let updatedFields = {username, password};
+
+    const user = await User.findByIdAndUpdate(req.user._id, updatedFields, {
+        returnDocument: 'after',
+        runValidators: true // validators prevent submitting empty field and letters (also input type does this)
+    });
+
+    return res.json(user);
+}
+
+export const deactivate = async (req, res) => {
+    const user = await User.findByIdAndDelete(req.user._id);
+    return res.json(user);
 }

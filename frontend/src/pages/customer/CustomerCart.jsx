@@ -1,11 +1,30 @@
 import CartCard from "../../components/CartCard.jsx";
 import { useEffect, useState, useContext } from "react";
 import { authenticateContext } from "../../context/authenticateContext";
+import { useNavigate } from "react-router-dom";
 
 const CustomerCart = () => {
     const [product, setProduct] = useState([]);
     const {user} = useContext(authenticateContext);
-    
+    const navigate = useNavigate();
+
+    const total = product.reduce((accumalator, currentValue) => {
+        return accumalator + currentValue.cartQuantity * currentValue.price;
+    }, 0)
+
+    const handlePayment = async () => {
+        const response = await fetch("http://localhost:4000/api/store/checkout", {
+            method: "POST",
+            headers: {
+                'Content-type' : 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            }
+        });
+
+        const {url} = await response.json();
+        window.location.href = url;
+    }
+
     const handleDelete = async (productID) => {
         try {
             const response = await fetch(`http://localhost:4000/api/store/addToCart/${productID}`, {
@@ -116,11 +135,14 @@ const CustomerCart = () => {
             fetchProduct();
         }
     }, [user]);
+
     return (
         <>
             {product && product.map((product) => (
                 <CartCard key={product._id} product={product} handleDelete={handleDelete} handleIncrement={handleIncrement} handleDecrement={handleDecrement}/>
             ))}
+            <h1>Total Price: {total} </h1>
+            <button onClick={handlePayment}>Checkout</button>
         </>
     )
 }

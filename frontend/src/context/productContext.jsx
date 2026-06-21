@@ -4,7 +4,7 @@ import {createContext, useReducer } from "react";
 export const ProductContext = createContext();
 
 const reducer = (state, action) => {
-    if (action.type === "SET_PRODUCTS") {
+    if (action.type === "SET_PRODUCTS" || action.type === "UPDATE_PRODUCT") {
         return {
             products: action.payload
         };
@@ -21,7 +21,7 @@ const reducer = (state, action) => {
             products: state.products.filter((product) => product._id !== action.payload._id)
         }
     }
-
+    
     return state;
 
 }

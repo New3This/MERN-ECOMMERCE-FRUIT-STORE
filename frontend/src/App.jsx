@@ -18,7 +18,7 @@ import UserInformation from "./pages/admin/userInformation.jsx"
 import HomePage from "./pages/HomePage.jsx"
 import SignUp from "./pages/SignUp.jsx"
 import Login from "./pages/Login.jsx"
-
+import Settings from "./pages/Settings.jsx";
 
 function App() {
 
@@ -45,7 +45,7 @@ function App() {
 
                     <Route path="/Signup" element={!user ? <SignUp/> : <Navigate to="/" />} />
                     <Route path="/Login" element={!user ? <Login/> : <Navigate to="/" />} />
-
+                    <Route path="/Settings" element={!user? <HomePage/> : <Settings/>}/> 
                     <Route path="/AdminProductPage" element={user && role === "admin" ? <AdminProductPage/> : <Navigate to="/" />} />
                     <Route path="/CustomerProductPage" element={user && role === "customer" ? <CustomerProductPage/> : <Navigate to="/" />} />
 
