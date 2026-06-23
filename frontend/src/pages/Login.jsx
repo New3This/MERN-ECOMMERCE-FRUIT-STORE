@@ -31,15 +31,20 @@ const Login = () => {
     }
 
     return (
-        <form className="login" onSubmit={handleSubmit}>
-            <label>Email/Username: </label>
-            <input type="text" onChange={(e) => setEmailUser(e.target.value)} value={EmailUser}/>
-
-            <label>Password: </label>
-            <input type="password" onChange={(e) => setPassword(e.target.value)} value={password}/>
-            <button>Submit</button>
-            {error && <div className="form-error-msg">{error}</div>}
-        </form>
+            <>
+                <button className="back-arrow" onClick={() => navigate(-1)}>
+                &larr;
+                </button>
+                <div className="form-container">
+                    <form className="login" onSubmit={handleSubmit}>
+                        <p className="login-title">Welcome back</p>
+                        <input type="text" placeholder="Email/Username" onChange={(e) => setEmailUser(e.target.value)} value={EmailUser}/>
+                        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password}/>
+                        <button className="login-button">Login</button>
+                        {error && <div className="form-error-msg">{error}</div>}
+                    </form>
+                </div>
+            </>
     )
 }
 

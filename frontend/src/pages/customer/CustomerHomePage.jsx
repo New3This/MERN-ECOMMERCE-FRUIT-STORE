@@ -14,8 +14,16 @@ const CustomerHomePage = () => {
 
     return (
         <>
-            <button onClick={handleSignup}>Sign up as customer</button>
-            <button onClick={handleLogin}>Login as customer</button>
+            <button className="back-arrow" onClick={() => navigate(-1)}>
+            &larr;
+            </button>
+            <div className="customer-visit-page">
+                <div id="visit-question">As customer, would you like to?</div>
+                <div className="visit-buttons">
+                    <button onClick={handleSignup}>Sign Up</button>
+                    <button onClick={handleLogin}>Login</button>
+                </div>
+            </div>
         </>
     )
 }

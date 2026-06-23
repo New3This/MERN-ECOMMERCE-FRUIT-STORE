@@ -12,8 +12,16 @@ const AdminHomePage = () => {
 
     return (
         <>
-            <button onClick={handleSignup}>Sign up as admin</button>
-            <button onClick={handleLogin}>Login as admin</button>
+            <button className="back-arrow" onClick={() => navigate(-1)}>
+                &larr;
+            </button>
+            <div className="customer-visit-page">
+                <div id="visit-question">As admin, would you like to?</div>
+                <div className="visit-buttons">
+                    <button onClick={handleSignup}>Sign up</button>
+                    <button onClick={handleLogin}>Login</button>
+                </div>
+            </div>
         </>
     )
 }

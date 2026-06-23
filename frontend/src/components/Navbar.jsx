@@ -21,32 +21,31 @@ const Navbar = () => {
     const { user } = useContext(authenticateContext);
 
     return (
-        <header>
-            <div className="navbar">
-                <nav>
-                    {!user && (
-                        <>
-                            <Link to="/" className="navbar-link">
-                                Join Us
-                            </Link>   
-                        </>
-                    )}
-                    {user && (
-                        <ul className="navbar-links">
-                            <li><a href="/">Home</a></li>
-                            <li><a href="/product">Products</a></li>
-                            <li><a href="/cart">Cart</a></li>
-                            <li className="logout-button">
-                                <img src={settings} onClick={handleSettings} alt="settings-icon" className="settings-icon"></img>
-                                <button onClick={logoutHandler} className="navbar-link">
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
-                    )}
-                </nav>
-            </div>
-        </header>
+            user && (
+                <header>
+                    <div className="navbar">
+                            <div className="navbar-links">
+
+                                <div className="nav-left">
+                                    <h2 className="logo-name">Storelio</h2>
+                                </div>
+
+                                <ul className="nav-middle">
+                                    <li><a href="/">Home</a></li>
+                                    <li><a href="/product">Products</a></li>
+                                    <li><a href="/cart">Cart</a></li>
+                                </ul>
+
+                                <div className="nav-right">
+                                    <img src={settings} onClick={handleSettings} alt="settings-icon" className="settings-icon"></img>
+                                    <button onClick={logoutHandler} className="navbar-link">
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                    </div>
+                </header>
+            )    
     )
 }
 

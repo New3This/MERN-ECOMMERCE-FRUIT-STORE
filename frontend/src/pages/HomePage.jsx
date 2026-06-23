@@ -12,11 +12,14 @@ const HomePage = () => {
     };
 
     return (
-        <>
-            <span>Which are you?</span>
-            <button onClick={handleCustomer}>Customer</button>
-            <button onClick={handleAdmin}>Admin</button>
-        </>
+        <div className="visit-mode">
+            <div id="visit-question">Which are you?</div>
+            <div className="visit-buttons">
+                <button onClick={handleCustomer} id="visit-customer">Customer</button>
+                <button onClick={handleAdmin} id="visit-admin">Admin</button>
+            </div>
+
+        </div>
     )
 }
 
