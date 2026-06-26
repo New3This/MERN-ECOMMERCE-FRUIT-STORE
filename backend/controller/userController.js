@@ -10,7 +10,7 @@ export const signupUser = async (req, res) => {
         const user = await userModel.signUp(req.body.username, req.body.email, req.body.password, req.body.role);
         const token = createToken(user._id);
         const data = {
-            ...user.toObject(), // convert Mongoose document to plain JavaScript object
+            ...user, // convert Mongoose document to plain JavaScript object
             token: token
         }
         res.status(201).json(data);
@@ -29,7 +29,7 @@ export const loginUser = async (req, res) => {
 
         const token = createToken(user._id);
         const data = {
-            ...user.toObject(),
+            ...user,
             token: token
         }
         res.status(201).json(data);

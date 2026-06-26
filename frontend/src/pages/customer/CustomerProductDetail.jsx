@@ -52,7 +52,7 @@ const CustomerProductDetail = () => {
             <h1>{product.title}</h1>
             <img src={product.image} alt={`image of ${product.title}`}/>
             <p>Price: {product.price}</p>
-            <p>Description: Need to add description property to model</p>
+            <p>Description: {product.description}</p>
             {product.quantity > 0 ? <p>Product Available</p> : <p>Product Unavailable</p>}
         </div>
     )

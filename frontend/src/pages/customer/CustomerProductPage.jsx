@@ -1,13 +1,43 @@
-import {useEffect, useContext} from "react";
+import {useEffect, useContext, useState} from "react";
 import { authenticateContext } from "../../context/authenticateContext.jsx";
 import { ProductContext } from "../../context/productContext.jsx";
 import CatalogueCard from "../../components/CatalogueCard.jsx";
+import CartComponent from "./CartComponent.jsx";
+
 
 const CustomerProductPage = () => {
-    const {state: {products}, dispatch} = useContext(ProductContext);
-    const {user} = useContext(authenticateContext);
 
+    const [openCart, setOpenCart] = useState(false);
+    const {state: {products}, dispatch: productDispatch} = useContext(ProductContext);
+    const {user, dispatch: userDispatch} = useContext(authenticateContext);
+    const [productCart, setProductCart] = useState([]);
+    
     useEffect(() => {
+        const fetchCart = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/api/store/addToCart`, {
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Fetch failed!");
+                }
+
+                const productData = await response.json();
+                const product = productData.map((savedItem) => ({
+                    ...savedItem.product, cartQuantity: savedItem.quantity
+                }));
+
+                setProductCart(product);
+                console.log(product);
+            } 
+            catch (err) {
+                console.log(err);
+            }
+        };
+
         const fetchProducts = async () => {
             try {
                 const response = await fetch('http://localhost:4000/api/store/', {
@@ -22,18 +52,23 @@ const CustomerProductPage = () => {
 
                 else {
                     const product = await response.json();
-                    dispatch({type: "SET_PRODUCTS", payload: product});
+                    productDispatch({type: "SET_PRODUCTS", payload: product});
+                    // console.log("HO");
                 }
             }
             catch (err) {
                 console.log(err);
             }
-        }
+        };
 
         if (user) {
             fetchProducts();
+            fetchCart();
         }
     }, [user]);
+
+    
+
 
    const handleDelete = async (product) => {
         if (!user) {
@@ -53,7 +88,7 @@ const CustomerProductPage = () => {
 
             else {
                 const json = await response.json();
-                dispatch({type: "DELETE_PRODUCT", payload: json});
+                productDispatch({type: "DELETE_PRODUCT", payload: json});
             }
         }
         catch (err) {
@@ -62,12 +97,15 @@ const CustomerProductPage = () => {
     }
 
     return (
-        <div>
+        <div className="customer-product-page-container">
             <h1>Customer Product Page</h1>
+            <div className="customer-product-page">
 
-            {products && products.map((product) => (
-                <CatalogueCard key={product._id} product={product} handleDelete={handleDelete}/>
-            ))}
+                {products && products.map((product) => (
+                    <CatalogueCard key={product._id} product={product} handleDelete={handleDelete} userDispatch={userDispatch} setOpenCart={setOpenCart}/>
+                ))}
+            </div>
+            <CartComponent setOpenCart={setOpenCart} dispatch={userDispatch} user={user} openCart={openCart} setProductCart={setProductCart} productCart={productCart}/>
 
         </div>
     )

@@ -48,19 +48,18 @@ const AdminProductPage = () => {
     return (
         <>
             <div className="admin-page">
-
-                <div className="product-group-container">
-
-                    {products && products.map((product) => (
-                        <ProductGroup key={product._id} product={product} />
-                    ))}
-
-                </div>
-
                 <div className="product-form-container">
+                    <div id="admin-product-page">ADD PRODUCT TO INVENTORY</div>
                     <ProductForm/>
                 </div>
 
+
+                <div className="product-group-container">
+                    <div className="admin-products">INVENTORY</div>
+                    {products && products.map((product) => (
+                        <ProductGroup key={product._id} product={product} />
+                    ))}
+                </div>
             </div>
             <button onClick={handleUser}>View users</button>
         </>

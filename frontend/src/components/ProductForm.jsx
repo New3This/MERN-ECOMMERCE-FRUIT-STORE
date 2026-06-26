@@ -9,7 +9,8 @@ const ProductForm = () => {
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [image, setImage] = useState('');
-
+    const [description, setDescription] = useState('');
+    
     const [errorFields, setErrorFields] = useState([]);
     const { user } = useContext(authenticateContext);
 
@@ -28,6 +29,7 @@ const ProductForm = () => {
         formData.append('title', title.trim());
         formData.append('price', price);
         formData.append('quantity', quantity);
+        formData.append('description', description);
         if (image) {
             formData.append('image', image);
         }
@@ -46,6 +48,7 @@ const ProductForm = () => {
         }
         else {
             setErrorFields([]);
+            setDescription('');
             setTitle('');
             setPrice('');
             setQuantity('');
@@ -60,14 +63,30 @@ const ProductForm = () => {
     
     return (
         <form className="admin-form">
-            <label>Title:</label>
-            <input type="text" onChange={(e) => {setTitle(e.target.value)}} value={title} className={errorFields.includes("title") ? "error" : ""}/>
-            <label>Price:</label>
-            <input type="number" onChange={(e) => {setPrice(e.target.value)}} value={price} className={errorFields.includes("price") ? "error" : ""}/>
-            <label>Quantity:</label>
-            <input type="number" onChange={(e) => {setQuantity(e.target.value)}} value={quantity} className={errorFields.includes("quantity") ? "error" : ""}/>
-            <label>Product Image:</label>
-            <input type="file" onChange={(e) => {setImage(e.target.files[0])}} ref={fileInputRef} className={errorFields.includes("image") ? "error" : ""}/>
+            <div className="form-group">
+                <label>Title:</label>
+                <input type="text" placeholder="Burger" onChange={(e) => {setTitle(e.target.value)}} value={title} className={errorFields.includes("title") ? "error" : ""}/>
+            </div>
+
+            <div className="form-group">
+                <label>Description:</label>
+                <input type="text" placeholder="Contains tomatos, hamburger, cheese and pickles" onChange={(e) => {setDescription(e.target.value)}} value={description} className={errorFields.includes("description") ? "error" : ""}/>
+            </div>
+
+            <div className="form-group">
+                <label>Price ($): </label>
+                <input type="number" placeholder="2.99" onChange={(e) => {setPrice(e.target.value)}} value={price} className={errorFields.includes("price") ? "error" : ""}/>
+            </div>
+
+            <div className="form-group">
+                <label>Quantity:</label>
+                <input type="number" placeholder="3" onChange={(e) => {setQuantity(e.target.value)}} value={quantity} className={errorFields.includes("quantity") ? "error" : ""}/>
+            </div>
+
+            <div className="form-group">
+                <label>Product Image:</label>
+                <input type="file" id="test" onChange={(e) => {setImage(e.target.files[0])}} ref={fileInputRef} className={errorFields.includes("image") ? "error" : ""}/>
+            </div>
             <button className="admin-button" onClick={submitProduct}>Add</button>
             {errorFields.length > 0 && 
                 (
