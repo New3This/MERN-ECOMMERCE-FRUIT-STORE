@@ -115,11 +115,14 @@ export const updateExistingProduct = async (req, res) => {
 
 export const createProduct = async (req, res) => {
     
-    const {title, price, quantity} = req.body;
+    const {title, description, price, quantity} = req.body;
     const errorFields = [];
 
     if (!title) {
         errorFields.push("title");
+    }
+    if (!description) {
+        errorFields.push("description");
     }
     if (!price) {
         errorFields.push("price");
@@ -138,7 +141,7 @@ export const createProduct = async (req, res) => {
         image = `${req.protocol}://${req.get('host')}/imageFolder/${req.file.filename}`;
                 // http         :// localhost:4000  /imageFolder/ filename.png
     }
-    const product = await Product.create({title, price, quantity, user_id, image});
+    const product = await Product.create({title, description, price, quantity, user_id, image});
     res.status(200).json(product);
   
     // res.send({msg:"Admin function to add store items"});
@@ -157,12 +160,20 @@ export const deleteProduct = async (req, res) => {
             return res.status(404).json({msg: "Product does not exist"});
         }
 
-        if (product.image) { // if has image, delete img
+        if (product.image) { // if has image => can be deleted or stored img
             //  http://localhost:4000/imageFolder/empty.png
-            const filename = product.image.split('/').pop(); // empty.png
-            const filePath = `./imageFolder/${filename}`; // /imageFolder/empty.png
+            try {
+                const filename = product.image.split('/').pop(); // empty.png
+                const filePath = `./imageFolder/${filename}`; // /imageFolder/empty.png
+                
+                if (fs.existsSync(filePath)) { // if img stored
+                    await fs.promises.unlink(filePath);
+                }
+            }
 
-            await fs.promises.unlink(filePath);
+            catch (err) {
+                console.log(er);
+            }
         }
         
         const cartUpdate = await User.updateMany(
@@ -193,7 +204,8 @@ export const addToCart = async (req, res) => {
 
     await user.save();
 
-    return res.json(user.cart);
+    const populatedCart = await User.findById(req.user._id).populate('cart.product').select('-password');
+    return res.json(populatedCart);
 }
 
 export const decrementCart = async (req, res) => {
@@ -244,9 +256,9 @@ export const removeFromCart = async (req, res) => {
 
         await user.save();
 
-        await user.populate('cart.product');
+        const populatedCart = await User.findById(req.user._id).populate('cart.product').select('-password');
         
-        return res.status(200).json(user.cart);
+        return res.status(200).json(populatedCart);
     }
     
     catch (err) {

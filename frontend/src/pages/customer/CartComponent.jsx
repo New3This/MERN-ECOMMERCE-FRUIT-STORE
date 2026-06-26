@@ -1,19 +1,14 @@
-import CartCard from "../../components/CartCard.jsx";
-import { useEffect, useState, useContext } from "react";
-import { authenticateContext } from "../../context/authenticateContext";
-import { useNavigate } from "react-router-dom";
-import currencyFormatter from "../../utility/currencyFormatter.jsx";
+import { useEffect } from "react";
+import trash from "../../assets/trash.png";
+import noImage from "../../assets/noImage.png"
+import currencyFormatter from "../../utility/currencyFormatter";
 
-const CustomerCart = () => {
-    const [product, setProduct] = useState([]);
-    const {user, dispatch} = useContext(authenticateContext);
-    const navigate = useNavigate();
+const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, productCart }) => {
+    // const total = product.reduce((accumalator, currentValue) => {
+    //     return accumalator + currentValue.cartQuantity * currentValue.price;
+    // }, 0)
 
-    const total = product.reduce((accumalator, currentValue) => {
-        return accumalator + currentValue.cartQuantity * currentValue.price;
-    }, 0)
-
-    const handlePayment = async () => {
+    const navigateCheckout = async () => {
         const response = await fetch("http://localhost:4000/api/store/checkout", {
             method: "POST",
             headers: {
@@ -24,7 +19,7 @@ const CustomerCart = () => {
 
         const {url} = await response.json();
         window.location.href = url;
-    }
+    };
 
     const handleDelete = async (productID) => {
         try {
@@ -45,7 +40,7 @@ const CustomerCart = () => {
                     {...savedItem.product, cartQuantity: savedItem.quantity}
                 ));
 
-                setProduct(updatedProducts);
+                setProductCart(updatedProducts);
 
                 const userPlusToken = {...update, token: user.token};
                 localStorage.setItem('user', JSON.stringify(userPlusToken));
@@ -76,7 +71,7 @@ const CustomerCart = () => {
             else {
                 const update = await response.json();
                 const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-                setProduct(product);
+                setProductCart(product);
             }
 
         }
@@ -85,6 +80,11 @@ const CustomerCart = () => {
         }
     }
 
+    const total = productCart.reduce((accumalator, currentValue) => {
+        return accumalator + currentValue.cartQuantity * currentValue.price;
+    }, 0);
+
+    const formattedTotal = currencyFormatter(total);
 
     const handleDecrement = async (product) => {
         
@@ -107,7 +107,7 @@ const CustomerCart = () => {
             else {
                 const update = await response.json();            
                 const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-                setProduct(product);
+                setProductCart(product);
             }
 
         }
@@ -116,46 +116,31 @@ const CustomerCart = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/api/store/addToCart`, {
-                    headers: {
-                        'Authorization': `Bearer ${user.token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error("Fetch failed!");
-                }
-
-                const productData = await response.json();
-                const product = productData.map((savedItem) => ({
-                    ...savedItem.product, cartQuantity: savedItem.quantity
-                }));
-
-                setProduct(product);
-                console.log(product);
-            } 
-            catch (err) {
-                console.log(err);
-            }
-        };
-
-        if (user) {
-            fetchProduct();
-        }
-    }, [user]);
-
     return (
-        <>
-            {product && product.map((product) => (
-                <CartCard key={product._id} product={product} handleDelete={handleDelete} handleIncrement={handleIncrement} handleDecrement={handleDecrement}/>
+        <div className={openCart ? "cart-open" : "cart-close"}>
+            <div className="close-button-container">
+                <h1>Shopping Cart:</h1>
+                <button onClick={() => setOpenCart(!openCart)} className="close-button">X</button>
+            </div>
+            {productCart && productCart.map((product) => (
+                <div className="product-mini-description" key={product._id}>
+                    <img src={trash} alt="Trash" className="trash-mini" onClick={() => handleDelete(product._id)} />
+                    <p className="product-mini-title">{product.title}</p>
+                    <p className="product-mini-price">{currencyFormatter(product.price)}</p>
+                    <img src={product.image ? product.image : noImage} alt={product.title} className="product-mini-image"/>
+                    <div className="cart-quantity-mini">
+                        <button onClick={() => handleIncrement(product._id)} className="increment-mini">+</button>
+                        <span className="product-mini-quantity">{product.cartQuantity}</span>
+                        <button onClick={() => handleDecrement(product)} className="decrement-mini">-</button>
+                    </div>
+
+                </div>
             ))}
-            <h1>Total Price: {currencyFormatter(total)} </h1>
-            <button onClick={handlePayment}>Checkout</button>
-        </>
-    )
+            <h1><hr></hr>Total Price: {formattedTotal} </h1>
+            <button onClick={navigateCheckout}>Checkout</button>
+        </div>
+    );
 }
 
-export default CustomerCart;
+export default CartComponent;
+

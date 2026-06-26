@@ -4,9 +4,9 @@ export const authenticateContext = createContext();
 
 const authReducer = (state, action) => {
     switch (action.type) {
-        case "LOGIN":
-            return {user: action.payload, authReady: true}
         case "SIGNUP":
+            return {user: action.payload, authReady: true}
+        case "LOGIN":
             return {user: action.payload, authReady: true}
         case "LOGOUT":
             return {user: null, authReady: true}
@@ -20,7 +20,7 @@ export const AuthenticateProvider = ({children}) => {
         user: null,
         authReady: false
     });
-
+    
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {

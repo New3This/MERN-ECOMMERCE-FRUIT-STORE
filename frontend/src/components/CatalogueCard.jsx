@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { authenticateContext } from "../context/authenticateContext.jsx";
 import { useContext } from "react";
-import bin from "../assets/trash.svg";
+import bin from "../assets/trash.png";
+import currencyFormatter from "../utility/currencyFormatter.jsx";
+import noImage from "../assets/noImage.png";
 
-const CatalogueCard = ({product, handleDelete}) => {
+const CatalogueCard = ({product, handleDelete, userDispatch, setOpenCart}) => {
 
     const navigate = useNavigate();
     const { user } = useContext(authenticateContext);
@@ -13,7 +15,7 @@ const CatalogueCard = ({product, handleDelete}) => {
     }
 
     const addToCart = async () => {
-
+        setOpenCart?.(true);
         try {
             const response = await fetch("http://localhost:4000/api/store/addToCart", {
                 method: "POST",
@@ -25,11 +27,14 @@ const CatalogueCard = ({product, handleDelete}) => {
             )
 
             if (!response.ok) {
-                const json = await response.json();
                 throw new Error("Failed to POST");
             }
 
-            console.log(await response.json());
+            const updatedUser = await response.json();
+            const userPlusToken = {...updatedUser, token: user.token}
+            localStorage.setItem('user', JSON.stringify(userPlusToken));
+
+            userDispatch({ type: 'LOGIN', payload: userPlusToken });
         }
         catch (err) {
             console.log(err);
@@ -38,11 +43,13 @@ const CatalogueCard = ({product, handleDelete}) => {
 
     return (
         <div className="catalogue-card">
-            <img src={product.image} alt={product.title} style={{width: "200px", height: "200px"}} />
+            <img src={product.image ? product.image : noImage} alt={product.title} style={{width: "200px", height: "200px"}} />
             <h2>{product.title}</h2>
-            <p>{product.price}</p>
-            <button onClick={viewProductInstance}>More Details</button>
-            <button onClick={addToCart}>Add to Cart</button>
+            <p>{currencyFormatter(product.price)}</p>
+            <div className="catalogue-buttons-container">
+                <button onClick={viewProductInstance} className="catalogue-buttons">More Details</button>
+                <button onClick={addToCart} className="catalogue-buttons">Add to Cart</button>
+            </div>
             {user.role !== "customer" && <img src={bin} alt="delete-icon" onClick={() => handleDelete(product)}/>}
         </div>
     )

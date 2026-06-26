@@ -37,6 +37,14 @@ const userSchema = mongoose.Schema({
     ]
 });
 
+userSchema.methods.sanitise = function () {
+    const user = this.toObject();
+
+    delete user.password;
+
+    return user;
+};
+
 userSchema.statics.signUp = async function(username, email, password, role="customer") { // defaults to customer
     const userExists = await this.findOne({username});
     const emailExists = await this.findOne({email});
@@ -65,7 +73,7 @@ userSchema.statics.signUp = async function(username, email, password, role="cust
 
     const user = await this.create({username, email, password: hashedPassword, role});
     
-    return user;
+    return user.sanitise();
 }
 
 userSchema.statics.login = async function (username, email, password, role) {
@@ -89,7 +97,7 @@ userSchema.statics.login = async function (username, email, password, role) {
         throw Error('Incorrect password');
     }
 
-    return user;
+      return user.sanitise();
 }
 
 export default mongoose.model('User', userSchema);
