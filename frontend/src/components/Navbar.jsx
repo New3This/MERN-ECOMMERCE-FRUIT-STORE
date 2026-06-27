@@ -32,6 +32,7 @@ const Navbar = () => {
 
                                 <ul className="nav-middle">
                                     <li><a href="/">Home</a></li>
+                                    <li><a href="/about">About</a></li>
                                     <li><a href="/product">Products</a></li>
                                     <li><a href="/cart">Cart</a></li>
                                 </ul>

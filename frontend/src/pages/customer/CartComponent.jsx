@@ -17,8 +17,13 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
             }
         });
 
-        const {url} = await response.json();
-        window.location.href = url;
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Checkout failed");
+        }
+
+        window.location.href = data.url;
     };
 
     const handleDelete = async (productID) => {

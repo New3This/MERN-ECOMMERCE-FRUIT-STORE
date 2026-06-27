@@ -12,24 +12,35 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const checkoutSession = async (req, res) => {
     try {
+        const user = await User.findById(req.user._id).populate('cart.product');
+
+        if (!user || !user.cart.length) {
+            return res.status(400).json({ error: "Your cart is empty." });
+        }
+
+        const line_items = user.cart.map((item) => {
+            const product = item.product;
+
+            return {
+                price_data: {
+                    currency: "AUD",
+                    product_data: {
+                        name: product.title,
+                        description: product.description,
+                        images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop"],
+                    },
+                    unit_amount: Math.round(product.price * 100),
+                },
+                quantity: item.quantity
+            };
+        });
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
-                line_items: [
-                    {
-                        price_data: {
-                            currency: "AUD",
-                            product_data: {
-                                name: "DEMO",
-                                description: "Simple Demo",
-                            },
-                            unit_amount: 4999,
-                        },
-                        quantity: 1
-                    }
-                ],
-                mode: "payment",
-                success_url:"http://localhost:5173/",
-                cancel_url:"http://localhost:5173/product"
+            line_items,
+            mode: "payment",
+            success_url:"http://localhost:5173/",
+            cancel_url:"http://localhost:5173/product"
         });
 
         return res.json({ url: session.url });

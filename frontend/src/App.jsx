@@ -10,6 +10,8 @@ import CustomerProductPage from "./pages/customer/CustomerProductPage.jsx"
 import CustomerProductDetail from "./pages/customer/CustomerProductDetail.jsx"
 import CustomerCart from "./pages/customer/CustomerCart.jsx"
 import CustomerAbout from './pages/customer/CustomerAbout.jsx';
+import CustomerLandingPage from "./pages/customer/CustomerLandingPage.jsx";
+
 
 import AdminProductPage from "./pages/admin/AdminProductPage.jsx"
 import AdminHomePage from "./pages/admin/AdminHomePage.jsx"
@@ -37,8 +39,9 @@ function App() {
                 <Routes>
                     <Route path="/product/:id" element={<CustomerProductDetail/>} />
                     <Route path="/cart" element={<CustomerCart/>}/>
+                    <Route path="/about" element={user ? <CustomerAbout/> : <HomePage/>} />
 
-                    <Route path="/" element={!user ? <HomePage/> : role === "customer" ? <CustomerAbout/> : <AdminProductPage/>} />
+                    <Route path="/" element={!user ? <HomePage/> : role === "customer" ? <CustomerLandingPage/> : <AdminProductPage/>} />
                     <Route path="/product" element={user ? <CustomerProductPage/> : <HomePage/>} />
                     <Route path="/CustomerHomePage" element={!user ? <CustomerHomePage/> : <Navigate to="/"/>} />
                     <Route path="/AdminHomePage" element={!user ? <AdminHomePage/> : <Navigate to="/" />} />

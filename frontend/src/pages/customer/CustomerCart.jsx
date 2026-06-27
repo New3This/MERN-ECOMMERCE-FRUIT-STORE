@@ -22,8 +22,13 @@ const CustomerCart = () => {
             }
         });
 
-        const {url} = await response.json();
-        window.location.href = url;
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Checkout failed");
+        }
+
+        window.location.href = data.url;
     }
 
     const handleDelete = async (productID) => {
@@ -148,13 +153,13 @@ const CustomerCart = () => {
     }, [user]);
 
     return (
-        <>
+        <div className="checkout-container">
             {product && product.map((product) => (
                 <CartCard key={product._id} product={product} handleDelete={handleDelete} handleIncrement={handleIncrement} handleDecrement={handleDecrement}/>
             ))}
             <h1>Total Price: {currencyFormatter(total)} </h1>
-            <button onClick={handlePayment}>Checkout</button>
-        </>
+            <button onClick={handlePayment} className="checkout-purchase">Checkout</button>
+        </div>
     )
 }
 

@@ -43,14 +43,15 @@ const CatalogueCard = ({product, handleDelete, userDispatch, setOpenCart}) => {
 
     return (
         <div className="catalogue-card">
-            <img src={product.image ? product.image : noImage} alt={product.title} style={{width: "200px", height: "200px"}} />
+            <img src={product.image ? product.image : noImage} alt={product.title} />
             <h2>{product.title}</h2>
             <p>{currencyFormatter(product.price)}</p>
             <div className="catalogue-buttons-container">
                 <button onClick={viewProductInstance} className="catalogue-buttons">More Details</button>
                 <button onClick={addToCart} className="catalogue-buttons">Add to Cart</button>
             </div>
-            {user.role !== "customer" && <img src={bin} alt="delete-icon" onClick={() => handleDelete(product)}/>}
+            {user.role !== "customer" && <button alt="delete-icon" onClick={() => handleDelete(product)} className="catalogue-card-remove">Remove</button>}
+
         </div>
     )
 }   

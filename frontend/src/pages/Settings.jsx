@@ -76,22 +76,33 @@ const Settings = () => {
     }
 
     return (
-        <>
-            <div>Edit Profile</div>
-            <form onSubmit={handleUpdate}>
-                <label>Username: </label>
-                <input value={username} onChange={(e) => setUserName(e.currentTarget.value)}/>
-                <label>Password: </label>
-                <input type={visible ? "text" : "password"} value={password} onChange={(e) => setPassword(e.currentTarget.value)}/>
-                <label>Confirm Password: </label>
-                <input type={visibleToo ? "text" : "password"} value={passwordToo} onChange={(e) => setPasswordToo(e.currentTarget.value)}/>
-                <img src={visible ? closeEye : eye} alt="see password button" onClick={() => setVisible(!visible)} ></img>
-                <img src={visibleToo ? closeEye : eye} alt="see password button" onClick={() => setVisibleToo(!visibleToo)} ></img>
-                <button type="submit">Submit</button>
-                {errorField.length > 0 && <div>{errorField.join(" and ")}</div>}
-            </form>
-            <button onClick={handleAcc}>Delete Account</button>
-        </>
+        <main className="settings-page">
+            <section className="settings-card">
+                <h1 className="settings-title">Edit Profile</h1>
+
+                <form onSubmit={handleUpdate} className="settings-form">
+                    <label>Username</label>
+                    <input value={username} onChange={(e) => setUserName(e.currentTarget.value)}/>
+
+                    <label>Password</label>
+                    <div className="settings-password-row">
+                        <input type={visible ? "text" : "password"} value={password} onChange={(e) => setPassword(e.currentTarget.value)}/>
+                        <img src={visible ? closeEye : eye} alt="see password button" onClick={() => setVisible(!visible)} className="settings-eye" />
+                    </div>
+
+                    <label>Confirm Password</label>
+                    <div className="settings-password-row">
+                        <input type={visibleToo ? "text" : "password"} value={passwordToo} onChange={(e) => setPasswordToo(e.currentTarget.value)}/>
+                        <img src={visibleToo ? closeEye : eye} alt="see password button" onClick={() => setVisibleToo(!visibleToo)} className="settings-eye" />
+                    </div>
+
+                    {errorField.length > 0 && <div className="settings-error">{errorField.join(" and ")}</div>}
+                    <button type="submit" className="settings-save-btn">Save Changes</button>
+                </form>
+
+                <button onClick={handleAcc} className="settings-danger-btn">Delete Account</button>
+            </section>
+        </main>
     )
 }
 
