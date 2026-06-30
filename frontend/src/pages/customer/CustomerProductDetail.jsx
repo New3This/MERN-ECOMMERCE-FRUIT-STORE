@@ -9,12 +9,16 @@ const CustomerProductDetail = () => {
     const {id} = useParams();
     const {state: {products}} = useContext(ProductContext);
     const [product, setProduct] = useState(null);
+    
     useEffect(() => {
 
-        const product = products.find((product) => product._id === id);
+        const product = products?.find((product) => product._id === id);
         
         if (product) {
             setProduct(product);
+            return;
+        }
+        if (!user) {
             return;
         }
 

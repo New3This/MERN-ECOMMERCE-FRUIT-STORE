@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import trash from "../../assets/trash.png";
 import noImage from "../../assets/noImage.png"
 import currencyFormatter from "../../utility/currencyFormatter";
+import { ProductContext } from "../../context/productContext.jsx";
 
 const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, productCart }) => {
+    const { dispatch: productDispatch } = useContext(ProductContext);
     // const total = product.reduce((accumalator, currentValue) => {
     //     return accumalator + currentValue.cartQuantity * currentValue.price;
     // }, 0)
@@ -26,13 +28,13 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
         window.location.href = data.url;
     };
 
-    const handleDelete = async (productID) => {
+    const handleDelete = async (product) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/${productID}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${user.token}`
-            }
+            const response = await fetch(`http://localhost:4000/api/store/addToCart/${product._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
             })
 
             if (!response.ok) {
@@ -46,6 +48,13 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
                 ));
 
                 setProductCart(updatedProducts);
+                productDispatch({
+                    type: "ADJUST_PRODUCT_STOCK",
+                    payload: {
+                        _id: product._id,
+                        quantity: product.quantity + product.cartQuantity
+                    }
+                });
 
                 const userPlusToken = {...update, token: user.token};
                 localStorage.setItem('user', JSON.stringify(userPlusToken));
@@ -60,14 +69,17 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
         }
     }
 
-    const handleIncrement = async (productID) => {
+    const handleIncrement = async (product) => {
+        if (product.quantity <= 0) {
+            return;
+        }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/increment/${productID}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${user.token}`,
-                'Content-Type': 'application/json'
-            }
+            const response = await fetch(`http://localhost:4000/api/store/addToCart/increment/${product._id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                }
             })
 
             if (!response.ok) {
@@ -75,8 +87,15 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
             }
             else {
                 const update = await response.json();
-                const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-                setProductCart(product);
+                const updatedCartProducts = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
+                setProductCart(updatedCartProducts);
+                productDispatch({
+                    type: "ADJUST_PRODUCT_STOCK",
+                    payload: {
+                        _id: product._id,
+                        quantity: Math.max(product.quantity - 1, 0)
+                    }
+                });
             }
 
         }
@@ -94,16 +113,16 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
     const handleDecrement = async (product) => {
         
         if (product.cartQuantity <= 1) {
-            await handleDelete(product._id);
+            await handleDelete(product);
             return;
         }
         try {
             const response = await fetch(`http://localhost:4000/api/store/addToCart/decrement/${product._id}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${user.token}`,
-                'Content-Type': 'application/json'
-            }
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                }
             })
 
             if (!response.ok) {
@@ -111,8 +130,15 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
             }
             else {
                 const update = await response.json();            
-                const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-                setProductCart(product);
+                const updatedCartProducts = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
+                setProductCart(updatedCartProducts);
+                productDispatch({
+                    type: "ADJUST_PRODUCT_STOCK",
+                    payload: {
+                        _id: product._id,
+                        quantity: product.quantity + 1
+                    }
+                });
             }
 
         }
@@ -129,12 +155,12 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
             </div>
             {productCart && productCart.map((product) => (
                 <div className="product-mini-description" key={product._id}>
-                    <img src={trash} alt="Trash" className="trash-mini" onClick={() => handleDelete(product._id)} />
+                    <img src={trash} alt="Trash" className="trash-mini" onClick={() => handleDelete(product)} />
                     <p className="product-mini-title">{product.title}</p>
                     <p className="product-mini-price">{currencyFormatter(product.price)}</p>
                     <img src={product.image ? product.image : noImage} alt={product.title} className="product-mini-image"/>
                     <div className="cart-quantity-mini">
-                        <button onClick={() => handleIncrement(product._id)} className="increment-mini">+</button>
+                        <button onClick={() => handleIncrement(product)} className="increment-mini" disabled={product.quantity <= 0}>+</button>
                         <span className="product-mini-quantity">{product.cartQuantity}</span>
                         <button onClick={() => handleDecrement(product)} className="decrement-mini">-</button>
                     </div>

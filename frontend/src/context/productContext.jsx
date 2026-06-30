@@ -10,6 +10,17 @@ const reducer = (state, action) => {
         };
     }
 
+    else if (action.type === "ADJUST_PRODUCT_STOCK") {
+        const currentProducts = Array.isArray(state.products) ? state.products : [];
+        return {
+            products: currentProducts.map((product) => (
+                product._id === action.payload._id
+                    ? { ...product, quantity: action.payload.quantity }
+                    : product
+            ))
+        };
+    }
+
     else if (action.type === "ADD_PRODUCT") {
         return {
             products: [action.payload, ...state.products]

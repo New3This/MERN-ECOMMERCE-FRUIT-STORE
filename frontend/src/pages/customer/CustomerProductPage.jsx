@@ -89,6 +89,7 @@ const CustomerProductPage = () => {
             else {
                 const json = await response.json();
                 productDispatch({type: "DELETE_PRODUCT", payload: json});
+                setProductCart((currentCart) => currentCart.filter((item) => item._id !== product._id));
             }
         }
         catch (err) {

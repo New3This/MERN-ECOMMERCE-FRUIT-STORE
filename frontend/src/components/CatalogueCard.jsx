@@ -4,11 +4,14 @@ import { useContext } from "react";
 import bin from "../assets/trash.png";
 import currencyFormatter from "../utility/currencyFormatter.jsx";
 import noImage from "../assets/noImage.png";
+import { ProductContext } from "../context/productContext.jsx";
 
 const CatalogueCard = ({product, handleDelete, userDispatch, setOpenCart}) => {
 
     const navigate = useNavigate();
     const { user } = useContext(authenticateContext);
+    const { dispatch: productDispatch } = useContext(ProductContext);
+    const isOutOfStock = product.quantity <= 0;
 
     const viewProductInstance = () => {
         navigate(`/product/${product._id}`);
@@ -35,6 +38,13 @@ const CatalogueCard = ({product, handleDelete, userDispatch, setOpenCart}) => {
             localStorage.setItem('user', JSON.stringify(userPlusToken));
 
             userDispatch({ type: 'LOGIN', payload: userPlusToken });
+            productDispatch({
+                type: "ADJUST_PRODUCT_STOCK",
+                payload: {
+                    _id: product._id,
+                    quantity: Math.max(product.quantity - 1, 0)
+                }
+            });
         }
         catch (err) {
             console.log(err);
@@ -48,7 +58,9 @@ const CatalogueCard = ({product, handleDelete, userDispatch, setOpenCart}) => {
             <p>{currencyFormatter(product.price)}</p>
             <div className="catalogue-buttons-container">
                 <button onClick={viewProductInstance} className="catalogue-buttons">More Details</button>
-                <button onClick={addToCart} className="catalogue-buttons">Add to Cart</button>
+                <button onClick={addToCart} className="catalogue-buttons" disabled={isOutOfStock}>
+                    {isOutOfStock ? "Out of Stock" : "Add to Cart"}
+                </button>
             </div>
             {user.role !== "customer" && <button alt="delete-icon" onClick={() => handleDelete(product)} className="catalogue-card-remove">Remove</button>}
 

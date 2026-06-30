@@ -3,10 +3,12 @@ import { useEffect, useState, useContext } from "react";
 import { authenticateContext } from "../../context/authenticateContext";
 import { useNavigate } from "react-router-dom";
 import currencyFormatter from "../../utility/currencyFormatter.jsx";
+import { ProductContext } from "../../context/productContext.jsx";
 
 const CustomerCart = () => {
     const [product, setProduct] = useState([]);
     const {user, dispatch} = useContext(authenticateContext);
+    const { dispatch: productDispatch } = useContext(ProductContext);
     const navigate = useNavigate();
 
     const total = product.reduce((accumalator, currentValue) => {
@@ -31,13 +33,13 @@ const CustomerCart = () => {
         window.location.href = data.url;
     }
 
-    const handleDelete = async (productID) => {
+    const handleDelete = async (productItem) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/${productID}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${user.token}`
-            }
+            const response = await fetch(`http://localhost:4000/api/store/addToCart/${productItem._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
             })
 
             if (!response.ok) {
@@ -51,6 +53,13 @@ const CustomerCart = () => {
                 ));
 
                 setProduct(updatedProducts);
+                productDispatch({
+                    type: "ADJUST_PRODUCT_STOCK",
+                    payload: {
+                        _id: productItem._id,
+                        quantity: productItem.quantity + productItem.cartQuantity
+                    }
+                });
 
                 const userPlusToken = {...update, token: user.token};
                 localStorage.setItem('user', JSON.stringify(userPlusToken));
@@ -65,14 +74,17 @@ const CustomerCart = () => {
         }
     }
 
-    const handleIncrement = async (productID) => {
+    const handleIncrement = async (productItem) => {
+        if (productItem.quantity <= 0) {
+            return;
+        }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/increment/${productID}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${user.token}`,
-                'Content-Type': 'application/json'
-            }
+            const response = await fetch(`http://localhost:4000/api/store/addToCart/increment/${productItem._id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                }
             })
 
             if (!response.ok) {
@@ -80,8 +92,15 @@ const CustomerCart = () => {
             }
             else {
                 const update = await response.json();
-                const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-                setProduct(product);
+                const updatedProducts = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
+                setProduct(updatedProducts);
+                productDispatch({
+                    type: "ADJUST_PRODUCT_STOCK",
+                    payload: {
+                        _id: productItem._id,
+                        quantity: Math.max(productItem.quantity - 1, 0)
+                    }
+                });
             }
 
         }
@@ -94,16 +113,16 @@ const CustomerCart = () => {
     const handleDecrement = async (product) => {
         
         if (product.cartQuantity <= 1) {
-            await handleDelete(product._id);
+            await handleDelete(product);
             return;
         }
         try {
             const response = await fetch(`http://localhost:4000/api/store/addToCart/decrement/${product._id}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${user.token}`,
-                'Content-Type': 'application/json'
-            }
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                }
             })
 
             if (!response.ok) {
@@ -111,8 +130,15 @@ const CustomerCart = () => {
             }
             else {
                 const update = await response.json();            
-                const product = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
-                setProduct(product);
+                const updatedProducts = update.map((cartItem) => ({...cartItem.product, cartQuantity: cartItem.quantity}));
+                setProduct(updatedProducts);
+                productDispatch({
+                    type: "ADJUST_PRODUCT_STOCK",
+                    payload: {
+                        _id: product._id,
+                        quantity: product.quantity + 1
+                    }
+                });
             }
 
         }

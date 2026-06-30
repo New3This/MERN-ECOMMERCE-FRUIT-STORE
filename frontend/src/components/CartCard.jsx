@@ -14,11 +14,11 @@ const CartCard = ({product, handleDelete, handleIncrement, handleDecrement}) => 
                     <div className="product-description-cart">{product.description}</div>
                     <div className="">{currencyFormatter(product.price)}</div>
                     <div className="increment-btn-container">
-                        <button onClick={() => handleIncrement(product._id)} className="increment-btn">+</button>
+                        <button onClick={() => handleIncrement(product)} className="increment-btn" disabled={product.quantity <= 0}>+</button>
                         <span className="product-btn-quantity">{product.cartQuantity}</span>
                         <button onClick={() => handleDecrement(product)} className="decrement-btn">-</button>
                     </div>
-                    <button src={trash} alt="Trash" className="remove-btn" onClick={() => handleDelete(product._id)} >Remove</button>
+                    <button src={trash} alt="Trash" className="remove-btn" onClick={() => handleDelete(product)} >Remove</button>
                 </div>
             </div>
     )
