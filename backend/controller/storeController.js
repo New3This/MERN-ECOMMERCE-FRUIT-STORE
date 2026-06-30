@@ -14,13 +14,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const extractURL = (imageUrl) => {
     if (!imageUrl) return null;
     try {
-        // https://res.cloudinary.com/DylanCloudStore/image/upload/v1782630691/store-products/kbssggtpophr85oftrbq.png
+        // https://res.cloudinary.com/dylancloudstore/image/upload/v1782630691/store-products/kbssggtpophr85oftrbq.png
         const parts = imageUrl.split('/');
         // [
         //   'https:',
         //   '',
         //   'res.cloudinary.com',
-        //   'DylanCloudStore',
+        //   'dylancloudstore',
         //   'image',
         //   'upload',
         //   'v1782630691',     
@@ -197,12 +197,11 @@ export const updateExistingProduct = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
-    
+    const errorFields = [];
     const {title, description, price, quantity} = req.body;
     if (!title) {
         errorFields.push("title");
     }
-    const errorFields = [];
 
     if (!description) {
         errorFields.push("description");
@@ -234,6 +233,9 @@ export const createProduct = async (req, res) => {
             // remove from localStorage since uploaded to cloudinary
         }
         catch (err) {
+            if (req.file && fs.existsSync(req.file.path)) {
+                    fs.unlinkSync(req.file.path);
+            }
             return res.status(500).json({msg: "Failed to upload image"});
         }
 
@@ -245,8 +247,16 @@ export const createProduct = async (req, res) => {
         /*image = `${req.protocol}://${req.get('host')}/imageFolder/${req.file.filename}`;*/
                 // http         :// localhost:4000  /imageFolder/ filename.png
     }
-    const product = await Product.create({title, description, price, quantity, user_id, image});
-    res.status(200).json(product);
+
+    try {
+        const product = await Product.create({title, description, price, quantity, user_id, image});
+        res.status(200).json(product);
+    }
+    catch (error) {
+        console.log("ERROR");
+        res.status(400).json(error);
+    }
+
   
     // res.send({msg:"Admin function to add store items"});
 }

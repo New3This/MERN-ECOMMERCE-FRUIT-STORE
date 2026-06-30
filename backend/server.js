@@ -61,7 +61,7 @@ const seedDatabase = async () => {
                 price: 10.99,
                 quantity: 10,
                 user_id: seedAdmin._id,
-                image: "https://res.cloudinary.com/DylanCloudStore/image/upload/v1782634030/image-removebg-preview_mcdaif.png"
+                image: "https://res.cloudinary.com/dylancloudstore/image/upload/v1782634030/image-removebg-preview_mcdaif.png"
             },
             {
                 title: "Kiwi fruit",
@@ -69,7 +69,7 @@ const seedDatabase = async () => {
                 price: 1.99,
                 quantity: 10,
                 user_id: seedAdmin._id,
-                image: "https://res.cloudinary.com/DylanCloudStore/image/upload/v1782634850/kiwi_fruit_nu4lre.jpg"
+                image: "https://res.cloudinary.com/dylancloudstore/image/upload/v1782634850/kiwi_fruit_nu4lre.jpg"
             },
             {
                 title: "Bowl worth of Strawberries",
@@ -77,7 +77,7 @@ const seedDatabase = async () => {
                 price: 2.99,
                 quantity: 10,
                 user_id: seedAdmin._id,
-                image: "https://res.cloudinary.com/DylanCloudStore/image/upload/v1782634772/bowl_of_strawberries_psvpwu.png"
+                image: "https://res.cloudinary.com/dylancloudstore/image/upload/v1782634772/bowl_of_strawberries_psvpwu.png"
             },
             {
                 title: "Bowl worth of Blackberries",
@@ -85,7 +85,7 @@ const seedDatabase = async () => {
                 price: 5.99,
                 quantity: 10,
                 user_id: seedAdmin._id,
-                image: "https://res.cloudinary.com/DylanCloudStore/image/upload/v1782634615/bowl_of_blackberries_cankgm.png"
+                image: "https://res.cloudinary.com/dylancloudstore/image/upload/v1782634615/bowl_of_blackberries_cankgm.png"
             },
         ]);
     }
@@ -96,7 +96,10 @@ mongoose.connect(process.env.MONGO_URI)
         await seedDatabase();
         app.listen(process.env.PORT, () => {
             console.log(`Connected to Database. Listening on port ${process.env.PORT}`);
-        })
+        });
+
+        const result = await cloudinary.api.usage();
+        console.log(result);
     })
     .catch((err) => {
         console.log(err);
