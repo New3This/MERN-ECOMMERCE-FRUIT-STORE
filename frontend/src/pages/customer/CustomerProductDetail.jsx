@@ -11,8 +11,9 @@ const CustomerProductDetail = () => {
     const [product, setProduct] = useState(null);
     
     useEffect(() => {
+        setProduct(null);
 
-        const product = products?.find((product) => product._id === id);
+        const product = products?.find((product) => String(product._id) === String(id));
         
         if (product) {
             setProduct(product);
@@ -47,7 +48,7 @@ const CustomerProductDetail = () => {
         if (user) {
             fetchProduct();
         };
-    }, [user]);
+    }, [id, user, products]);
 
     if (!product) {
         return <div className="product-detail-page product-detail-empty">Product not found</div>;

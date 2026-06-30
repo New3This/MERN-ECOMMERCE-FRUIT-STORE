@@ -414,7 +414,7 @@ export const updateProfile = async (req, res) => {
     let {username, password} = req.body;
     const errorField = [];
     if (!validator.isStrongPassword(password)) {
-        errorField.push('Password is not strong enough');
+        errorField.push('Passwords require at least 8 characters, 1 special character, 1 number, 1 lowercase and 1 uppercase letter');
     }
     
     const userExists = await User.findOne({username, _id : {$ne: req.user._id}}); // $ne -> not equal
