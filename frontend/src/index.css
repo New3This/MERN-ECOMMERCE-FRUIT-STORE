@@ -1648,3 +1648,67 @@ input.error {
 .settings-icon { 
     cursor: pointer;
 }
+
+/* Stripe Result Pages */
+
+.transaction-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.transaction-container > img {
+    width:200px;
+    padding: 4.2em 0;
+}
+
+
+.success-title {
+    max-width: 500px;
+    font-size: 2.1rem;
+    margin: 0 auto;
+    text-align: center;
+    color: rgb(20, 20, 20);
+}
+
+.result-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.result-button {
+    min-width: 160px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 700;
+}
+
+.result-button-primary {
+    background: black;
+    color: white;
+}
+
+.result-button-secondary {
+    background: white;
+    color: black;
+}
+
+@media (max-width: 640px) {
+    .result-button {
+        width: 100%;
+    }
+
+    .transaction-img {
+        width: 350px;
+    }
+
+    .success-title {
+        font-size:1.6em;
+    }
+}
+

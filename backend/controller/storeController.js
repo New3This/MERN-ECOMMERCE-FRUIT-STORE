@@ -76,12 +76,14 @@ export const checkoutSession = async (req, res) => {
             };
         });
 
+        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             line_items,
             mode: "payment",
-            success_url:"http://localhost:5173/",
-            cancel_url:"http://localhost:5173/product"
+            success_url: `${clientUrl}/success`,
+            cancel_url: `${clientUrl}/failed`
         });
 
         return res.json({ url: session.url });
