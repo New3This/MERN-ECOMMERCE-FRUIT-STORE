@@ -33,7 +33,8 @@ app.use('/api/user', userRoutes);
         // browser url       folder name
         // browser url: http://localhost:4000/imageFolder/empty.png
         // folder name: backend/imageFolder/empty.png
-
+        //
+        
 const seedDatabase = async () => {
     const productCount = await Product.countDocuments();
 
