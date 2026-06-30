@@ -97,9 +97,6 @@ mongoose.connect(process.env.MONGO_URI)
         app.listen(process.env.PORT, () => {
             console.log(`Connected to Database. Listening on port ${process.env.PORT}`);
         });
-
-        const result = await cloudinary.api.usage();
-        console.log(result);
     })
     .catch((err) => {
         console.log(err);
