@@ -14,13 +14,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const extractURL = (imageUrl) => {
     if (!imageUrl) return null;
     try {
-        // https://res.cloudinary.com/dluzdsmxw/image/upload/v1782630691/store-products/kbssggtpophr85oftrbq.png
+        // https://res.cloudinary.com/DylanCloudStore/image/upload/v1782630691/store-products/kbssggtpophr85oftrbq.png
         const parts = imageUrl.split('/');
         // [
         //   'https:',
         //   '',
         //   'res.cloudinary.com',
-        //   'dluzdsmxw',
+        //   'DylanCloudStore',
         //   'image',
         //   'upload',
         //   'v1782630691',     
