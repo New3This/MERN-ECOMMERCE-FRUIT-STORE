@@ -12,7 +12,6 @@ import { v2 as cloudinary } from 'cloudinary';
 dotenv.config();
 
 const app = express();
-let dbReadyPromise = null;
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -25,25 +24,6 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
-
-app.get('/health', (_req, res) => {
-    res.status(200).json({ status: 'ok' });
-});
-
-app.use(async (req, res, next) => {
-    if (!req.path.startsWith('/api')) {
-        return next();
-    }
-
-    try {
-        await startServer();
-        return next();
-    } catch (err) {
-        console.error('Database connection failed:', err);
-        return res.status(503).json({ error: 'Database unavailable. Please try again later.' });
-    }
-});
-
 app.use('/api/store', storeRoutes);
 app.use('/api/user', userRoutes);
 
@@ -103,42 +83,26 @@ const seedDatabase = async () => {
 };
 
 const startServer = async () => {
-    if (mongoose.connection.readyState === 1) {
+    if (!process.env.MONGO_URI) {
+        console.warn('MONGO_URI not defined. Skipping database connection.');
         return;
     }
 
-    if (dbReadyPromise) {
-        return dbReadyPromise;
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        await seedDatabase();
+
+        if (process.env.VERCEL !== '1') {
+            app.listen(process.env.PORT || 4000, () => {
+                console.log(`Connected to Database. Listening on port ${process.env.PORT || 4000}`);
+            });
+        }
+    } catch (err) {
+        console.log(err);
     }
-
-    if (!process.env.MONGO_URI) {
-        throw new Error('MONGO_URI not defined.');
-    }
-
-    dbReadyPromise = mongoose.connect(process.env.MONGO_URI, {
-        serverSelectionTimeoutMS: 30000,
-        family: 4
-    })
-        .then(async () => {
-            await seedDatabase();
-
-            if (process.env.VERCEL !== '1') {
-                app.listen(process.env.PORT || 4000, () => {
-                    console.log(`Connected to Database. Listening on port ${process.env.PORT || 4000}`);
-                });
-            }
-        })
-        .catch((err) => {
-            dbReadyPromise = null;
-            throw err;
-        });
-
-    return dbReadyPromise;
 };
 
-void startServer().catch((err) => {
-    console.error(err);
-});
+void startServer();
 
 export { app, startServer };
 export default app;
