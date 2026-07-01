@@ -14,7 +14,7 @@ import CustomerLandingPage from "./pages/customer/CustomerLandingPage.jsx";
 
 import AdminProductPage from "./pages/admin/AdminProductPage.jsx"
 import AdminHomePage from "./pages/admin/AdminHomePage.jsx"
-import UserInformation from "./pages/admin/userInformation.jsx"
+import UserInformation from "./pages/admin/UserInformation.jsx"
 
 import HomePage from "./pages/HomePage.jsx"
 import SignUp from "./pages/SignUp.jsx"
