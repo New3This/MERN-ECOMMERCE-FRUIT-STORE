@@ -34,7 +34,7 @@ const ProductForm = () => {
             formData.append('image', image);
         }
 
-        const response = await fetch("http://localhost:4000/api/store/", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/`, {
             method:"POST",
             body: formData,
             headers: {

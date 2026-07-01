@@ -15,7 +15,7 @@ const Settings = () => {
 
 
     const handleAcc = async() => {
-        const response = await fetch(`http://localhost:4000/api/store/deactivate`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/deactivate`, {
             method: "DELETE",
             headers: {
                 'Authorization' : `Bearer ${user.token}`
@@ -43,7 +43,7 @@ const Settings = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:4000/api/store/profile`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/profile`, {
                 method: "PATCH",
                 body: JSON.stringify(userData),
                 headers: {

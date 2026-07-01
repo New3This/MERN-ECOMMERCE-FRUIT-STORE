@@ -15,7 +15,7 @@ const CustomerProductPage = () => {
     useEffect(() => {
         const fetchCart = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/api/store/addToCart`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
@@ -40,7 +40,7 @@ const CustomerProductPage = () => {
 
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:4000/api/store/', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }
@@ -75,7 +75,7 @@ const CustomerProductPage = () => {
             return
         }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/${product._id}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${user.token}`

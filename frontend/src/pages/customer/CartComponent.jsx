@@ -11,7 +11,7 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
     // }, 0)
 
     const navigateCheckout = async () => {
-        const response = await fetch("http://localhost:4000/api/store/checkout", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/checkout`, {
             method: "POST",
             headers: {
                 'Content-type' : 'application/json',
@@ -30,7 +30,7 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
 
     const handleDelete = async (product) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart/${product._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${user.token}`
@@ -74,7 +74,7 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
             return;
         }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/increment/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart/increment/${product._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${user.token}`,
@@ -117,7 +117,7 @@ const CartComponent = ({ setOpenCart, user, dispatch, openCart, setProductCart, 
             return;
         }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/decrement/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart/decrement/${product._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${user.token}`,

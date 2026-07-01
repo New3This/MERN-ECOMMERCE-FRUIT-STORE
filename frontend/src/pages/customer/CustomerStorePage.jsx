@@ -11,7 +11,7 @@ const CustomerStorePage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:4000/api/store/', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

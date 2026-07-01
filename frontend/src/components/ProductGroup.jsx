@@ -33,7 +33,7 @@ const ProductGroup = ({product}) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:4000/api/store/update/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/update/${product._id}`, {
                 method: "PATCH",
                 body: formData,
                 headers: {
@@ -65,7 +65,7 @@ const ProductGroup = ({product}) => {
             return
         }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/${product._id}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${user.token}`

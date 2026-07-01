@@ -16,7 +16,7 @@ const CustomerCart = () => {
     }, 0)
 
     const handlePayment = async () => {
-        const response = await fetch("http://localhost:4000/api/store/checkout", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/checkout`, {
             method: "POST",
             headers: {
                 'Content-type' : 'application/json',
@@ -35,7 +35,7 @@ const CustomerCart = () => {
 
     const handleDelete = async (productItem) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/${productItem._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart/${productItem._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${user.token}`
@@ -79,7 +79,7 @@ const CustomerCart = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/increment/${productItem._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart/increment/${productItem._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${user.token}`,
@@ -117,7 +117,7 @@ const CustomerCart = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:4000/api/store/addToCart/decrement/${product._id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart/decrement/${product._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${user.token}`,
@@ -150,7 +150,7 @@ const CustomerCart = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/api/store/addToCart`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

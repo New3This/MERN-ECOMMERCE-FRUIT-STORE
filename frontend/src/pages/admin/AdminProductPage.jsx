@@ -18,7 +18,7 @@ const AdminProductPage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:4000/api/store/admin', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/admin`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

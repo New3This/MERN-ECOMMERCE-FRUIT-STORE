@@ -26,7 +26,7 @@ const CustomerProductDetail = () => {
         // if someone refreshes the page, can still access using params
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/api/store/${id}`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

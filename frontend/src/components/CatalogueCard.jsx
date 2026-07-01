@@ -20,7 +20,7 @@ const CatalogueCard = ({product, handleDelete, userDispatch, setOpenCart}) => {
     const addToCart = async () => {
         setOpenCart?.(true);
         try {
-            const response = await fetch("http://localhost:4000/api/store/addToCart", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/addToCart`, {
                 method: "POST",
                 body: JSON.stringify({productID: product._id}),
                 headers: {

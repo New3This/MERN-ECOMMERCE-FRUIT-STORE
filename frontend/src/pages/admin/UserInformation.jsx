@@ -7,7 +7,7 @@ const UserInformation = () => {
     const { user: adminUser } = useContext(authenticateContext);
 
     const handleDelUser = async (userID) => {
-    const response = await fetch(`http://localhost:4000/api/store/deleteUser/${userID}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/deleteUser/${userID}`, {
         method: "DELETE",
         headers: {
             'Authorization': `Bearer ${adminUser.token}`
@@ -28,7 +28,7 @@ const UserInformation = () => {
     useEffect(() => {
         const fetchUserInformation = async () => {
             try {
-                const response = await fetch('http://localhost:4000/api/store/customers', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/store/customers`, {
                     headers: {
                         'Authorization': `Bearer ${adminUser.token}`
                     }
